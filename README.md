@@ -1,0 +1,1 @@
+Generic version of splitter. Supports multiple users to be added/removed to receive ether.
