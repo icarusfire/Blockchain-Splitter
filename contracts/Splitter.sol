@@ -8,8 +8,9 @@ contract Splitter is UserCRUD {
     constructor() public payable {
         owner = msg.sender;
     }
-
-    function splitEther(uint amount) public payable{
+	
+    function splitEther() public payable{
+        uint amount = msg.value;
         address sender = msg.sender;
         bytes32 key = toBytes32(msg.sender);
         (address addr,, bool canSplitEther,,) = getUser(key);
@@ -52,5 +53,15 @@ contract Splitter is UserCRUD {
             }
         }
     }
-    
+	
+    function () external payable {
+    }
+	
+    function getBalance() public returns (uint){
+        return address(this).balance;
+    }
+	
+    function getOwner() public view returns (address){
+        return owner;
+	}
 }
