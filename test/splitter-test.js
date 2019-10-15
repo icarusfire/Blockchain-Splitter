@@ -1,7 +1,6 @@
 // deploy Splitter contract
 // Create 3 extra accounts
-// Put some money on these accounts and contract so they can send transactions
-// Register these accounts to contract by contract's "registerUser" method, by the owner's account
+// Register these accounts to contract by "registerUser" method, using the owner's account
 // Call split method on the contract 
 
 const Splitter = artifacts.require("Splitter");
