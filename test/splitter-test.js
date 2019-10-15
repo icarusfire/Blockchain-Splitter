@@ -33,7 +33,6 @@ contract('Splitter', (accounts) => {
 	  assert.equal(count,3);
   });
   
- 
   it("account-1 initial balance should be 100", function() {
          console.log("John", accounts[1])
 	  	 return getBalancePromise(accounts[1]) // This is another promise   
@@ -55,25 +54,19 @@ contract('Splitter', (accounts) => {
   it('split', async () => {
     const splitterInstance = await Splitter.deployed();
 	const amountToSend = web3.utils.toWei(new BN(10));
-	
 	await splitterInstance.splitEther({from: accounts[1], value:amountToSend });
 	
 	const balance1 = await web3.eth.getBalance(accounts[1]);
 	const balance1_ETH = web3.utils.fromWei(new BN(balance1),'ether');
-	console.log(balance1_ETH);
-	// assert.isTrue( balance1_ETH < 90);
-	// assert.isTrue( balance1_ETH > 89);
-	//
-	
+	assert.isTrue( balance1_ETH < 90);
+	assert.isTrue( balance1_ETH > 89);
+
 	const balance2 = await web3.eth.getBalance(accounts[2]);
 	const balance2_ETH = web3.utils.fromWei(new BN(balance2),'ether');
-	console.log(balance2_ETH);
 	assert.equal( balance2_ETH, "105");
 	
 	const balance3 = await web3.eth.getBalance(accounts[3]);
 	const balance3_ETH = web3.utils.fromWei(new BN(balance3),'ether');
-	console.log(balance3_ETH);
 	assert.equal( balance3_ETH, "105");
-	
   });
 });
