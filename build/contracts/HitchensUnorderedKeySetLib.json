@@ -1,15 +1,15 @@
 {
   "contractName": "HitchensUnorderedKeySetLib",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/icarus/eth/splitter/Projects/Blockchain-Splitter/contracts/HitchensUnorderedKeySet.sol\":\"HitchensUnorderedKeySetLib\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/icarus/eth/splitter/Projects/Blockchain-Splitter/contracts/HitchensUnorderedKeySet.sol\":{\"keccak256\":\"0xa520d8e9a76e797ecbc9136b2bda1517893604714e6c40f9eb7b6bc768b5e235\",\"urls\":[\"bzzr://1b557326f7baa406ba8ac1c12a3448520c94022563558a10e71d72f93aeec60c\"]}},\"version\":1}",
-  "bytecode": "0x60ed610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c8063440f7e9a146038575b600080fd5b818015604357600080fd5b50606d60048036036020811015605857600080fd5b8101908080359060200190929190505050606f565b005b806001016000607d91906080565b50565b5080546000825590600052602060002090810190609c9190609f565b50565b60be91905b8082111560ba57600081600090555060010160a4565b5090565b9056fea165627a7a72305820f698864c3e6294f38619a020062dfb7ed319418dc39b2b640de564a2d136275e0029",
-  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c8063440f7e9a146038575b600080fd5b818015604357600080fd5b50606d60048036036020811015605857600080fd5b8101908080359060200190929190505050606f565b005b806001016000607d91906080565b50565b5080546000825590600052602060002090810190609c9190609f565b50565b60be91905b8082111560ba57600081600090555060010160a4565b5090565b9056fea165627a7a72305820f698864c3e6294f38619a020062dfb7ed319418dc39b2b640de564a2d136275e0029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/icarus/eth/splitter/Projects/Splitter/contracts/HitchensUnorderedKeySet.sol\":\"HitchensUnorderedKeySetLib\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/icarus/eth/splitter/Projects/Splitter/contracts/HitchensUnorderedKeySet.sol\":{\"keccak256\":\"0xa520d8e9a76e797ecbc9136b2bda1517893604714e6c40f9eb7b6bc768b5e235\",\"urls\":[\"bzzr://1b557326f7baa406ba8ac1c12a3448520c94022563558a10e71d72f93aeec60c\"]}},\"version\":1}",
+  "bytecode": "0x60ed610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c8063440f7e9a146038575b600080fd5b818015604357600080fd5b50606d60048036036020811015605857600080fd5b8101908080359060200190929190505050606f565b005b806001016000607d91906080565b50565b5080546000825590600052602060002090810190609c9190609f565b50565b60be91905b8082111560ba57600081600090555060010160a4565b5090565b9056fea165627a7a72305820b368f2ebf9f42179be48a6b42eb30ae9ec3366a8de03f185dda61220415e754a0029",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c8063440f7e9a146038575b600080fd5b818015604357600080fd5b50606d60048036036020811015605857600080fd5b8101908080359060200190929190505050606f565b005b806001016000607d91906080565b50565b5080546000825590600052602060002090810190609c9190609f565b50565b60be91905b8082111560ba57600081600090555060010160a4565b5090565b9056fea165627a7a72305820b368f2ebf9f42179be48a6b42eb30ae9ec3366a8de03f185dda61220415e754a0029",
   "sourceMap": "1316:1419:1:-;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
   "deployedSourceMap": "1316:1419:1:-;;;;;;;;;;;;;;;;;;;;;;;;2655:78;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2655:78:1;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;2655:78:1;;;;;;;;;;;;;;;;;:::i;:::-;;;2714:4;:12;;;2707:19;;;;:::i;:::-;2655:78;:::o;1316:1419::-;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "pragma solidity 0.5.8; \n\n/* \nHitchens UnorderedKeySet v0.93\n\nLibrary for managing CRUD operations in dynamic key sets.\n\nhttps://github.com/rob-Hitchens/UnorderedKeySet\n\nCopyright (c), 2019, Rob Hitchens, the MIT License\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\nTHIS SOFTWARE IS NOT TESTED OR AUDITED. DO NOT USE FOR PRODUCTION.\n*/\n\nlibrary HitchensUnorderedKeySetLib {\n    \n    struct Set {\n        mapping(bytes32 => uint) keyPointers;\n        bytes32[] keyList;\n    }\n    \n    function insert(Set storage self, bytes32 key) internal {\n        require(key != 0x0, \"UnorderedKeySet(100) - Key cannot be 0x0\");\n        require(!exists(self, key), \"UnorderedKeySet(101) - Key already exists in the set.\");\n        self.keyPointers[key] = self.keyList.push(key)-1;\n    }\n    \n    function remove(Set storage self, bytes32 key) internal {\n        require(exists(self, key), \"UnorderedKeySet(102) - Key does not exist in the set.\");\n        bytes32 keyToMove = self.keyList[count(self)-1];\n        uint rowToReplace = self.keyPointers[key];\n        self.keyPointers[keyToMove] = rowToReplace;\n        self.keyList[rowToReplace] = keyToMove;\n        delete self.keyPointers[key];\n        self.keyList.length--;\n    }\n    \n    function count(Set storage self) internal view returns(uint) {\n        return(self.keyList.length);\n    }\n    \n    function exists(Set storage self, bytes32 key) internal view returns(bool) {\n        if(self.keyList.length == 0) return false;\n        return self.keyList[self.keyPointers[key]] == key;\n    }\n    \n    function keyAtIndex(Set storage self, uint index) internal view returns(bytes32) {\n        return self.keyList[index];\n    }\n    \n    function nukeSet(Set storage self) public {\n        delete self.keyList;\n    }\n}\n\ncontract HitchensUnorderedKeySet {\n    \n    using HitchensUnorderedKeySetLib for HitchensUnorderedKeySetLib.Set;\n    HitchensUnorderedKeySetLib.Set set;\n    \n    event LogUpdate(address sender, string action, bytes32 key);\n    \n    function exists(bytes32 key) public view returns(bool) {\n        return set.exists(key);\n    }\n    \n    function insert(bytes32 key) public {\n        set.insert(key);\n        emit LogUpdate(msg.sender, \"insert\", key);\n    }\n    \n    function remove(bytes32 key) public {\n        set.remove(key);\n        emit LogUpdate(msg.sender, \"remove\", key);\n    }\n    \n    function count() public view returns(uint) {\n        return set.count();\n    }\n    \n    function keyAtIndex(uint index) public view returns(bytes32) {\n        return set.keyAtIndex(index);\n    }\n    \n    function nukeSet() public {\n        set.nukeSet();\n    }\n}\n",
-  "sourcePath": "/Users/icarus/eth/splitter/Projects/Blockchain-Splitter/contracts/HitchensUnorderedKeySet.sol",
+  "sourcePath": "/Users/icarus/eth/splitter/Projects/Splitter/contracts/HitchensUnorderedKeySet.sol",
   "ast": {
-    "absolutePath": "/Users/icarus/eth/splitter/Projects/Blockchain-Splitter/contracts/HitchensUnorderedKeySet.sol",
+    "absolutePath": "/Users/icarus/eth/splitter/Projects/Splitter/contracts/HitchensUnorderedKeySet.sol",
     "exportedSymbols": {
       "HitchensUnorderedKeySet": [
         454
@@ -3459,7 +3459,7 @@
     "src": "0:3594:1"
   },
   "legacyAST": {
-    "absolutePath": "/Users/icarus/eth/splitter/Projects/Blockchain-Splitter/contracts/HitchensUnorderedKeySet.sol",
+    "absolutePath": "/Users/icarus/eth/splitter/Projects/Splitter/contracts/HitchensUnorderedKeySet.sol",
     "exportedSymbols": {
       "HitchensUnorderedKeySet": [
         454
@@ -6912,9 +6912,16 @@
     "name": "solc",
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x11BF76Ce24b8D7d25b08517BDA553B5855e0152E",
+      "transactionHash": "0xef8274dfdf40ee047d1fe64d96b61853ece60f69d1eb407ad55b906cf28bd181"
+    }
+  },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-10-12T11:47:10.088Z",
+  "updatedAt": "2019-10-15T23:03:22.691Z",
   "devdoc": {
     "methods": {}
   },
