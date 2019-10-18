@@ -14,10 +14,10 @@ contract Splitter {
         uint balance;
     }
 
-    constructor() public {
-        users[ALICE] = User(0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c, 0);
-        users[BOB] = User(0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C, 0);
-        users[CAROL] = User(0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB, 0);
+    constructor(address alice, address bob, address carol) public {
+        users[ALICE] = User(alice, 0);
+        users[BOB] = User(bob, 0);
+        users[CAROL] = User(carol, 0);
     }
     
     function splitEther() public payable{
