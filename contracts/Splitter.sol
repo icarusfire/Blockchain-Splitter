@@ -24,9 +24,9 @@ contract Splitter {
         require(msg.sender == users[ALICE].addr);
         uint amount = SafeMath.div(msg.value, 2);
         uint remaining = SafeMath.mod(msg.value, 2);
-        users[BOB].balance += amount;
-        users[CAROL].balance += amount; 
-        users[ALICE].balance += remaining;
+        users[BOB].balance = SafeMath.add(users[BOB].balance, amount);
+        users[CAROL].balance = SafeMath.add(users[CAROL].balance, amount); 
+        users[ALICE].balance = SafeMath.add(users[ALICE].balance, remaining);
     }
     
     function withdraw(uint amount) public returns (uint){
@@ -47,7 +47,7 @@ contract Splitter {
         require (user.balance >= amount);
         require (address(this).balance >= amount);
 
-        user.balance -= amount;
+        user.balance = SafeMath.sub(user.balance, amount);
         msg.sender.transfer(amount);
     }
     
