@@ -6,14 +6,12 @@
 const Splitter = artifacts.require("Splitter");
 Promise = require("bluebird");
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
-
+var alice = accounts[0];
+var bob = accounts[1];
+var carol = acocunts[2];
 var BN = web3.utils.BN;
 
 contract('Splitter', (accounts) => {
-  accounts[1]="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c";
-  accounts[2]="0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C";
-  accounts[3]="0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB";
-
   it('contract balance should be 0', async () => {
     const splitterInstance = await Splitter.deployed();
 	const owner = await splitterInstance.getOwner();
@@ -55,9 +53,9 @@ contract('Splitter', (accounts) => {
   });
   
   it('split', async () => {
-    const splitterInstance = await Splitter.deployed();
+  const splitterInstance = await Splitter.deployed();
 	const amountToSend = web3.utils.toWei(new BN(10));
-	await splitterInstance.splitEther({from: accounts[1], value:amountToSend });
+	await splitterInstance.splitEther({from: alice, value:amountToSend });
 	
 	const balance1 = await web3.eth.getBalance(accounts[1]);
 	const balance1_ETH = web3.utils.fromWei(new BN(balance1),'ether');

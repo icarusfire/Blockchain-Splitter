@@ -29,7 +29,7 @@ contract Splitter {
         users[ALICE].balance = SafeMath.add(users[ALICE].balance, remaining);
     }
     
-    function withdraw(uint amount) public returns (uint){
+    function withdraw(uint amount) public{
         require (amount > 0);
         User memory user;
         if(msg.sender == users[ALICE].addr){
