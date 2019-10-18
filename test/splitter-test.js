@@ -10,6 +10,10 @@ const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 var BN = web3.utils.BN;
 
 contract('Splitter', (accounts) => {
+  accounts[1]="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c";
+  accounts[2]="0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C";
+  accounts[3]="0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB";
+
   it('contract balance should be 0', async () => {
     const splitterInstance = await Splitter.deployed();
 	const owner = await splitterInstance.getOwner();
