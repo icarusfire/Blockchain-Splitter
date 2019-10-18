@@ -3,63 +3,48 @@ import "./SafeMath.sol";
 
 contract Splitter {
    
-   string constant ALICE = "Alice";
-   string constant BOB = "Bob"; 
-   string constant CAROL = "Carol"; 
+    address public alice;
+    address public bob;
+    address public carol;
 
-   mapping(string => User) users;
+    mapping(address => uint256) public balances;
 
-   struct User {
-        address addr;
-        uint balance;
-    }
-
-    constructor(address alice, address bob, address carol) public {
-        users[ALICE] = User(alice, 0);
-        users[BOB] = User(bob, 0);
-        users[CAROL] = User(carol, 0);
+    constructor(address a, address b, address c) public {
+        require(a != address(0) || b != address(0) || c != address(0));
+        alice = a;
+        bob = b;
+        carol = c;
+        balances[alice] = 0;
+        balances[bob] = 0;
+        balances[carol] = 0;
     }
     
     function splitEther() public payable{
-        require(msg.sender == users[ALICE].addr);
-        uint amount = SafeMath.div(msg.value, 2);
-        uint remaining = SafeMath.mod(msg.value, 2);
-        users[BOB].balance = SafeMath.add(users[BOB].balance, amount);
-        users[CAROL].balance = SafeMath.add(users[CAROL].balance, amount); 
-        users[ALICE].balance = SafeMath.add(users[ALICE].balance, remaining);
+        require(msg.sender == alice);
+        require(msg.value > 0);
+
+        uint256 amount = SafeMath.div(msg.value, 2);
+        uint256 remaining = SafeMath.mod(msg.value, 2);
+        balances[bob] = SafeMath.add(balances[bob], amount);
+        balances[carol] = SafeMath.add(balances[carol], amount); 
+        balances[alice] = SafeMath.add(balances[alice], remaining);
+        //address(this).balance = SafeMath.add(address(this).balance, msg.value);
     }
     
-    function withdraw(uint amount) public{
+    function withdraw(uint256 amount) public{
         require (amount > 0);
-        User memory user;
-        if(msg.sender == users[ALICE].addr){
-            user = users[ALICE];
-        }
-        else if(msg.sender == users[BOB].addr){
-            user = users[BOB];
-        }
-        else if(msg.sender == users[CAROL].addr){
-            user = users[CAROL];
-        }
-        else{
-            revert();
-        }
-        require (user.balance >= amount);
+        require (balances[msg.sender] >= amount);
         require (address(this).balance >= amount);
-
-        user.balance = SafeMath.sub(user.balance, amount);
+        balances[msg.sender]  = SafeMath.sub(balances[msg.sender] , amount);
         msg.sender.transfer(amount);
     }
     
-    function getContractBalance() public view returns (uint){
+    function getContractBalance() public view returns (uint256){
         return address(this).balance;
     }
     
-    function getUser(string memory name) public view returns (address addr, uint balance){
-        return (users[name].addr,  users[name].balance);
+    function getUser(address addr) public view returns (uint256 balance){
+        return balances[addr];
     }
     
-    function convertAddress(bytes32 data) external pure returns (address payable) {
-        return address(uint160(bytes20(data)));
-    }
 }

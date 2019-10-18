@@ -1,73 +1,55 @@
-// deploy Splitter contract
-// Create 3 extra accounts
-// Register these accounts to contract by "registerUser" method, using the owner's account
-// Call split method on the contract 
-
 const Splitter = artifacts.require("Splitter");
 Promise = require("bluebird");
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
-var alice = accounts[0];
-var bob = accounts[1];
-var carol = acocunts[2];
 var BN = web3.utils.BN;
 
 contract('Splitter', (accounts) => {
-  it('contract balance should be 0', async () => {
-    const splitterInstance = await Splitter.deployed();
-	const owner = await splitterInstance.getOwner();
-	const amountToSend = new BN(10);
-	await web3.eth.sendTransaction({to:splitterInstance.address, from:accounts[4], value:web3.utils.toWei(amountToSend)})
-    const balance = await splitterInstance.getBalance.call();
-	const ethBalance = web3.utils.fromWei(balance,'ether');
-	console.log("balance", ethBalance);
-    assert.equal(ethBalance, 10, "10 wasn't the initial contract balance");
-  });
-  
-  it("create three accounts", async () => {
-      const splitterInstance = await Splitter.deployed();
-  	  const owner = await splitterInstance.getOwner();
-      await splitterInstance.registerUser(accounts[1], "John", true, true, true, {from: owner }); 
-      await splitterInstance.registerUser(accounts[2], "Paul", true, true, true, {from: owner });
-      await splitterInstance.registerUser(accounts[3], "Ringo", true, true, true, {from: owner });
-  	  const count = await splitterInstance.getUserCount.call();
-      console.log("Count", count);
-	  assert.equal(count,3);
-  });
-  
-  it("account-1 initial balance should be 100", function() {
-         console.log("John", accounts[1])
-	  	 return getBalancePromise(accounts[1]) // This is another promise   
-          .then(balance => assert.equal(web3.utils.fromWei(balance,'ether'), "100"));
-  });
-  
-  it("account-2 initial balance should be 100", function() {
-         console.log("Paul", accounts[2])
-	  	 return getBalancePromise(accounts[2]) // This is another promise   
-          .then(balance => assert.equal(web3.utils.fromWei(balance,'ether'), "100"));
-  });
-  
-  it("account-3 initial balance should be 100", function() {
-         console.log("Ringo", accounts[3])
-	  	 return getBalancePromise(accounts[3]) // This is another promise   
-          .then(balance => assert.equal(web3.utils.fromWei(balance,'ether'), "100"));
-  });
-  
+
   it('split', async () => {
-  const splitterInstance = await Splitter.deployed();
+  var alice = accounts[0];
+  var bob = accounts[1];
+  var carol = accounts[2];
+
+  const splitterInstance = await Splitter.new(alice,bob,carol);
 	const amountToSend = web3.utils.toWei(new BN(10));
 	await splitterInstance.splitEther({from: alice, value:amountToSend });
 	
-	const balance1 = await web3.eth.getBalance(accounts[1]);
-	const balance1_ETH = web3.utils.fromWei(new BN(balance1),'ether');
+	const balance1 = await web3.eth.getBalance(alice);
+  const balance1_ETH = web3.utils.fromWei(new BN(balance1),'ether');
+  console.log(balance1_ETH);
 	assert.isTrue( balance1_ETH < 90);
-	assert.isTrue( balance1_ETH > 89);
-
-	const balance2 = await web3.eth.getBalance(accounts[2]);
+  assert.isTrue( balance1_ETH > 89);
+  
+	const balance2 = await web3.eth.getBalance(bob);
 	const balance2_ETH = web3.utils.fromWei(new BN(balance2),'ether');
-	assert.equal( balance2_ETH, "105");
+  assert.equal( balance2_ETH, "100");
+  
+  const balanceBefore = await splitterInstance.getUser(bob);
+	const balanceBefore_ETH = web3.utils.fromWei(new BN(balanceBefore),'ether');
+  assert.equal( balanceBefore_ETH, "5");
 	
-	const balance3 = await web3.eth.getBalance(accounts[3]);
-	const balance3_ETH = web3.utils.fromWei(new BN(balance3),'ether');
-	assert.equal( balance3_ETH, "105");
+  const amountToDraw = web3.utils.toWei(new BN(5));
+  await splitterInstance.withdraw(amountToDraw, {from: bob});
+  await splitterInstance.withdraw(amountToDraw, {from: carol});
+
+  const balanceAfter = await web3.eth.getBalance(bob);
+	const balanceAfter_ETH = web3.utils.fromWei(new BN(balanceAfter),'ether');
+  assert.isTrue( balanceAfter_ETH < "105");
+  assert.isTrue( balanceAfter_ETH > "104");
+
+
+  const balanceBeforeBob = await splitterInstance.getUser(bob);
+	const balanceBeforeBob_ETH = web3.utils.fromWei(new BN(balanceBeforeBob),'ether');
+  assert.equal( balanceBeforeBob_ETH, "0");
+	
+  const balanceAfterCarol = await web3.eth.getBalance(carol);
+	const balanceAfterCarol_ETH = web3.utils.fromWei(new BN(balanceAfterCarol),'ether');
+  assert.isTrue( balanceAfterCarol_ETH < "105");
+  assert.isTrue( balanceAfterCarol_ETH > "104");
+
+  const balanceCarol = await splitterInstance.getUser(carol);
+	const balanceCarol_ETH = web3.utils.fromWei(new BN(balanceCarol),'ether');
+  assert.equal( balanceCarol_ETH, "0");
+	
   });
 });
