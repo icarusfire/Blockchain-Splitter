@@ -11,9 +11,18 @@ contract('Splitter', (accounts) => {
   var carol = accounts[2];
 
   const splitterInstance = await Splitter.new(alice,bob,carol);
+
+  const contractBalace = await splitterInstance.getContractBalance();
+	const contractBalaceETH = web3.utils.fromWei(new BN(contractBalace),'ether');
+  assert.equal( contractBalaceETH, "0");
+
 	const amountToSend = web3.utils.toWei(new BN(10));
 	await splitterInstance.splitEther({from: alice, value:amountToSend });
-	
+  
+  const contractBalace2 = await splitterInstance.getContractBalance();
+	const contractBalace2ETH = web3.utils.fromWei(new BN(contractBalace2),'ether');
+  assert.equal( contractBalace2ETH, "10");
+
 	const balance1 = await web3.eth.getBalance(alice);
   const balance1_ETH = web3.utils.fromWei(new BN(balance1),'ether');
   console.log(balance1_ETH);
@@ -36,7 +45,6 @@ contract('Splitter', (accounts) => {
 	const balanceAfter_ETH = web3.utils.fromWei(new BN(balanceAfter),'ether');
   assert.isTrue( balanceAfter_ETH < "105");
   assert.isTrue( balanceAfter_ETH > "104");
-
 
   const balanceBeforeBob = await splitterInstance.getUser(bob);
 	const balanceBeforeBob_ETH = web3.utils.fromWei(new BN(balanceBeforeBob),'ether');

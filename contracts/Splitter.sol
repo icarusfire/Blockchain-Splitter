@@ -2,7 +2,10 @@ pragma solidity 0.5.8;
 import "./SafeMath.sol";
 
 contract Splitter {
-   
+       
+    event LogSplitEvent(uint256 amountToBeSplitted, uint256 aliceBalance, uint256 bobBalance, uint256 carolBalance, uint256 contractBalance);
+    event LogWithdrawEvent(address sender, uint256 amountDrawn, uint256 senderFinalBalance, uint256 contractBalance);
+
     address public alice;
     address public bob;
     address public carol;
@@ -28,7 +31,7 @@ contract Splitter {
         balances[bob] = SafeMath.add(balances[bob], amount);
         balances[carol] = SafeMath.add(balances[carol], amount); 
         balances[alice] = SafeMath.add(balances[alice], remaining);
-        //address(this).balance = SafeMath.add(address(this).balance, msg.value);
+        emit LogSplitEvent(msg.value, balances[alice], balances[bob], balances[carol], getContractBalance());
     }
     
     function withdraw(uint256 amount) public{
@@ -37,6 +40,7 @@ contract Splitter {
         require (address(this).balance >= amount);
         balances[msg.sender]  = SafeMath.sub(balances[msg.sender] , amount);
         msg.sender.transfer(amount);
+        emit LogWithdrawEvent(msg.sender, amount, balances[msg.sender], getContractBalance());
     }
     
     function getContractBalance() public view returns (uint256){
