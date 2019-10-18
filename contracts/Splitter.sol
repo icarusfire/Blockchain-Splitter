@@ -17,9 +17,6 @@ contract Splitter {
         alice = a;
         bob = b;
         carol = c;
-        balances[alice] = 0;
-        balances[bob] = 0;
-        balances[carol] = 0;
     }
     
     function splitEther() public payable{
