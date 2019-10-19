@@ -13,7 +13,7 @@ contract Splitter {
     
     function splitEther(address recp1, address recp2) public payable{
         require(msg.value > 0, "Split amount should be higher than 0");
-        require(recp1 != NULL && recp2 != NULL, "One or more addresses is missing");
+        require(recp1 != NULL && recp2 != NULL, "Recipient addresses should not be empty");
     
         uint256 amount = msg.value.div(2);
         uint256 remaining = msg.value.mod(2);
