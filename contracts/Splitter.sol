@@ -1,43 +1,34 @@
 pragma solidity 0.5.8;
 import "./SafeMath.sol";
 
-contract Splitter {
-       
-    event LogSplitEvent(uint256 amountToBeSplitted, uint256 aliceBalance, uint256 bobBalance, uint256 carolBalance, uint256 contractBalance);
-    event LogWithdrawEvent(address sender, uint256 amountDrawn, uint256 senderFinalBalance, uint256 contractBalance);
-
+contract Splitter {     
+    using SafeMath for uint256;
+    event LogSplitEvent(address sender, uint256 amountToBeSplitted, address addressRecp1, address addressRecp2);
+    event LogWithdrawEvent(address sender, uint256 amountDrawn, uint256 remainingContractBalance);
+    
+    address constant NULL = address(0);   
     mapping(address => uint256) public balances;
 
-    constructor() public {
-    }
+    constructor() public {}
     
     function splitEther(address recp1, address recp2) public payable{
-        require(msg.value > 0);
-        require(recp1 != address(0) || recp2 != address(0));
-
-        uint256 amount = SafeMath.div(msg.value, 2);
-        uint256 remaining = SafeMath.mod(msg.value, 2);
-        balances[recp1] = SafeMath.add(balances[recp1], amount);
-        balances[recp2] = SafeMath.add(balances[recp2], amount); 
-        balances[msg.sender] = SafeMath.add(balances[msg.sender], remaining);
-        emit LogSplitEvent(msg.value, balances[msg.sender], balances[recp1], balances[recp2], getContractBalance());
+        require(msg.value > 0, "Split amount should be higher than 0");
+        require(recp1 != NULL && recp2 != NULL, "One or more addresses is missing");
+    
+        uint256 amount = msg.value.div(2);
+        uint256 remaining = msg.value.mod(2);
+        balances[recp1] = balances[recp1].add(amount);
+        balances[recp2] = balances[recp2].add(amount); 
+        balances[msg.sender] = balances[msg.sender].add(remaining);
+        emit LogSplitEvent(msg.sender, msg.value, recp1, recp2);
     }
     
     function withdraw(uint256 amount) public{
-        require (amount > 0);
-        require (balances[msg.sender] >= amount);
-        require (address(this).balance >= amount);
-        balances[msg.sender]  = SafeMath.sub(balances[msg.sender] , amount);
+        require (amount > 0, "Withdraw amount should be higher than 0");
+        require (balances[msg.sender] >= amount, "Not eneough user funds");
+        require (address(this).balance >= amount, "Not eneough contract funds");
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        emit LogWithdrawEvent(msg.sender, amount, address(this).balance);
         msg.sender.transfer(amount);
-        emit LogWithdrawEvent(msg.sender, amount, balances[msg.sender], getContractBalance());
-    }
-    
-    function getContractBalance() public view returns (uint256){
-        return address(this).balance;
-    }
-    
-    function getUser(address addr) public view returns (uint256 balance){
-        return balances[addr];
-    }
-    
+    }           
 }
