@@ -8,19 +8,19 @@ contract Splitter {
 
     mapping(address => uint256) public balances;
 
-    constructor(address a, address b, address c) public {
-        require(a != address(0) || b != address(0) || c != address(0));
+    constructor() public {
     }
     
-    function splitEther(address b, address c) public payable{
+    function splitEther(address recp1, address recp2) public payable{
         require(msg.value > 0);
+        require(recp1 != address(0) || recp2 != address(0));
 
         uint256 amount = SafeMath.div(msg.value, 2);
         uint256 remaining = SafeMath.mod(msg.value, 2);
-        balances[b] = SafeMath.add(balances[b], amount);
-        balances[c] = SafeMath.add(balances[c], amount); 
+        balances[recp1] = SafeMath.add(balances[recp1], amount);
+        balances[recp2] = SafeMath.add(balances[recp2], amount); 
         balances[msg.sender] = SafeMath.add(balances[msg.sender], remaining);
-        emit LogSplitEvent(msg.value, balances[msg.sender], balances[b], balances[c], getContractBalance());
+        emit LogSplitEvent(msg.value, balances[msg.sender], balances[recp1], balances[recp2], getContractBalance());
     }
     
     function withdraw(uint256 amount) public{

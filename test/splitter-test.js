@@ -10,7 +10,7 @@ contract('Splitter', (accounts) => {
   var bob = accounts[1];
   var carol = accounts[2];
 
-  const splitterInstance = await Splitter.new(alice,bob,carol);
+  const splitterInstance = await Splitter.new();
 
   const contractBalace = await splitterInstance.getContractBalance();
 	const contractBalaceETH = web3.utils.fromWei(new BN(contractBalace),'ether');
