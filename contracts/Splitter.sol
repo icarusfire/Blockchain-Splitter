@@ -4,7 +4,7 @@ import "./SafeMath.sol";
 contract Splitter {     
     using SafeMath for uint256;
     event LogSplitEvent(address sender, uint256 amountToBeSplitted, address addressRecp1, address addressRecp2);
-    event LogWithdrawEvent(address sender, uint256 amountDrawn, uint256 remainingContractBalance);
+    event LogWithdrawEvent(address sender, uint256 amountDrawn);
     
     address constant NULL = address(0);   
     mapping(address => uint256) public balances;
@@ -28,7 +28,7 @@ contract Splitter {
         require (balances[msg.sender] >= amount, "Not eneough user funds");
         require (address(this).balance >= amount, "Not eneough contract funds");
         balances[msg.sender] = balances[msg.sender].sub(amount);
-        emit LogWithdrawEvent(msg.sender, amount, address(this).balance);
+        emit LogWithdrawEvent(msg.sender, amount);
         msg.sender.transfer(amount);
     }           
 }
