@@ -17,7 +17,7 @@ contract('Splitter', (accounts) => {
   assert.equal( contractBalaceETH, "0");
 
 	const amountToSend = web3.utils.toWei(new BN(10));
-	await splitterInstance.splitEther({from: alice, value:amountToSend });
+	await splitterInstance.splitEther(bob, carol,{from: alice, value:amountToSend });
   
   const contractBalace2 = await splitterInstance.getContractBalance();
 	const contractBalace2ETH = web3.utils.fromWei(new BN(contractBalace2),'ether');

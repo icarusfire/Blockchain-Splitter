@@ -6,29 +6,21 @@ contract Splitter {
     event LogSplitEvent(uint256 amountToBeSplitted, uint256 aliceBalance, uint256 bobBalance, uint256 carolBalance, uint256 contractBalance);
     event LogWithdrawEvent(address sender, uint256 amountDrawn, uint256 senderFinalBalance, uint256 contractBalance);
 
-    address public alice;
-    address public bob;
-    address public carol;
-
     mapping(address => uint256) public balances;
 
     constructor(address a, address b, address c) public {
         require(a != address(0) || b != address(0) || c != address(0));
-        alice = a;
-        bob = b;
-        carol = c;
     }
     
-    function splitEther() public payable{
-        require(msg.sender == alice);
+    function splitEther(address b, address c) public payable{
         require(msg.value > 0);
 
         uint256 amount = SafeMath.div(msg.value, 2);
         uint256 remaining = SafeMath.mod(msg.value, 2);
-        balances[bob] = SafeMath.add(balances[bob], amount);
-        balances[carol] = SafeMath.add(balances[carol], amount); 
-        balances[alice] = SafeMath.add(balances[alice], remaining);
-        emit LogSplitEvent(msg.value, balances[alice], balances[bob], balances[carol], getContractBalance());
+        balances[b] = SafeMath.add(balances[b], amount);
+        balances[c] = SafeMath.add(balances[c], amount); 
+        balances[msg.sender] = SafeMath.add(balances[msg.sender], remaining);
+        emit LogSplitEvent(msg.value, balances[msg.sender], balances[b], balances[c], getContractBalance());
     }
     
     function withdraw(uint256 amount) public{
