@@ -26,7 +26,6 @@ contract Splitter {
     function withdraw(uint256 amount) public{
         require (amount > 0, "Withdraw amount should be higher than 0");
         require (balances[msg.sender] >= amount, "Not eneough user funds");
-        require (address(this).balance >= amount, "Not eneough contract funds");
         balances[msg.sender] = balances[msg.sender].sub(amount);
         emit LogWithdrawEvent(msg.sender, amount);
         msg.sender.transfer(amount);
