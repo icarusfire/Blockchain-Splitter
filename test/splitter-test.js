@@ -14,7 +14,7 @@ const amountToDraw = web3.utils.toWei(new BN(10));
 contract('Splitter', (accounts) => {
   const [ alice, bob, carol ] = accounts;
 
-  it("should split ether to two accounts again", function() {
+  it("should split ether to two accounts", function() {
     return Splitter.deployed()
         .then(instance => {
             return instance.splitEther(bob, carol,{from: alice, value:amountToSend });
