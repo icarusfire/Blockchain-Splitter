@@ -24,12 +24,7 @@ contract('Splitter', (accounts) => {
         .then( tx => {
             truffleAssert.eventEmitted(tx, 'LogSplitEvent', (ev) => {
                 return ev.addressRecp1 === bob && ev.addressRecp2 === carol;
-        });
-            return getBalancePromise(alice);
-        })
-        .then(balanceAlice => {
-            const balanceAliceEth = web3.utils.fromWei(new BN(balanceAlice),'ether');
-            assert.equal(balanceAliceEth, 79.97354008);
+          });
         })
   });
 
