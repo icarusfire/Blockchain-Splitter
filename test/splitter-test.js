@@ -4,12 +4,14 @@ const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 var BN = web3.utils.BN;
 
 const gasUsedForWithdraw = new BN(21824);
-const gasPrice = 10000000;
-const trxCost = gasUsedForWithdraw.mul(new BN(gasPrice));
+const gasPrice = new BN(1000000);
+const trxCost = gasUsedForWithdraw.mul(gasPrice);
+
+const amountToSend = web3.utils.toWei(new BN(20));
+const amountToDraw = web3.utils.toWei(new BN(10));
+
 
 contract('Splitter', (accounts) => {
-  const amountToSend = web3.utils.toWei(new BN(20));
-  const amountToDraw = web3.utils.toWei(new BN(10));
   const [ alice, bob, carol ] = accounts;
 
   it("should split ether to two accounts again", function() {
