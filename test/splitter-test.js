@@ -1,5 +1,7 @@
 const Splitter = artifacts.require("Splitter");
 Promise = require("bluebird");
+const truffleAssert = require('truffle-assertions');
+
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 var BN = web3.utils.BN;
 
@@ -19,7 +21,10 @@ contract('Splitter', (accounts) => {
         .then(instance => {
             return instance.splitEther(bob, carol,{from: alice, value:amountToSend });
         })
-        .then( _ => {
+        .then( tx => {
+            truffleAssert.eventEmitted(tx, 'LogSplitEvent', (ev) => {
+                return ev.addressRecp1 === bob && ev.addressRecp2 === carol;
+        });
             return getBalancePromise(alice);
         })
         .then(balanceAlice => {
@@ -94,5 +99,6 @@ contract('Splitter', (accounts) => {
           console.log(balanceCarolEth);
          })
   });
+
 
 });
