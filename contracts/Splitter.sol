@@ -6,14 +6,13 @@ contract Splitter {
     event LogSplitEvent(address indexed sender, uint256 amountToBeSplitted, address indexed addressRecp1, address indexed addressRecp2);
     event LogWithdrawEvent(address indexed sender, uint256 amountDrawn);
 
-    address constant NULL = address(0);
     mapping(address => uint256) public balances;
 
     constructor() public {}
 
     function splitEther(address recp1, address recp2) public payable{
         require(msg.value > 0, "Split amount should be higher than 0");
-        require(recp1 != NULL && recp2 != NULL, "Recipient addresses should not be empty");
+        require(recp1 != address(0) && recp2 != address(0), "Recipient addresses should not be empty");
 
         uint256 amount = msg.value.div(2);
         uint256 remaining = msg.value.mod(2);
