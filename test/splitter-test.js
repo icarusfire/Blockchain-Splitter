@@ -1,20 +1,18 @@
 const Splitter = artifacts.require("Splitter");
 Promise = require("bluebird");
 const truffleAssert = require('truffle-assertions');
-
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 const BN = web3.utils.BN;
 const gasPrice = new BN(1000000);
-
 const amountToSend = web3.utils.toWei(new BN(20));
 const amountToDraw = web3.utils.toWei(new BN(10));
 
 var fromWei = function(balance){return web3.utils.fromWei(new BN(balance),'ether');}
 
 contract('Splitter', (accounts) => {
-  const [ alice, bob, carol ] = accounts;
+    const [ alice, bob, carol ] = accounts;
 
-  it("should split ether to two accounts and emit", function() {
+it("should split ether to two accounts and emit", function() {
     return Splitter.deployed()
         .then(instance => {
             return instance.splitEther(bob, carol,{from: alice, value:amountToSend });
@@ -26,7 +24,7 @@ contract('Splitter', (accounts) => {
         })
   });
 
-  it("Bob's balance should have 10 ether", function() {
+it("Bob's balance should have 10 ether", function() {
     return Splitter.deployed()
         .then(instance => {
             return instance.balances(bob);
@@ -37,7 +35,7 @@ contract('Splitter', (accounts) => {
         })
   });
 
-  it("Carol's balance should have 10 ether", function() {
+it("Carol's balance should have 10 ether", function() {
     return Splitter.deployed()
         .then(instance => {
             return instance.balances(carol);
@@ -48,7 +46,7 @@ contract('Splitter', (accounts) => {
         });
   });
 
-  it("Bob can withdraw funds", function() {
+it("Bob can withdraw funds", function() {
     var gasUsed;
     return Splitter.deployed()
         .then(instance => {
@@ -76,7 +74,7 @@ contract('Splitter', (accounts) => {
         })
   });
 
-  it("Carol can withdraw funds", function() {
+it("Carol can withdraw funds", function() {
     var gasUsed;
     return Splitter.deployed()
         .then(instance => {
