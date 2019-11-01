@@ -3,12 +3,13 @@ Promise = require("bluebird");
 const truffleAssert = require('truffle-assertions');
 
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
-var BN = web3.utils.BN;
+const BN = web3.utils.BN;
 const gasPrice = new BN(1000000);
 
 const amountToSend = web3.utils.toWei(new BN(20));
 const amountToDraw = web3.utils.toWei(new BN(10));
 
+var fromWei = function(balance){return web3.utils.fromWei(new BN(balance),'ether');}
 
 contract('Splitter', (accounts) => {
   const [ alice, bob, carol ] = accounts;
@@ -31,8 +32,8 @@ contract('Splitter', (accounts) => {
             return instance.balances(bob);
         })
         .then(balanceBob => {
-            const balanceBobEth = web3.utils.fromWei(new BN(balanceBob),'ether');
-            assert.equal(balanceBobEth, 10);
+            const balanceBobEth = fromWei(balanceBob);
+            assert.strictEqual(balanceBobEth, '10');
         })
   });
 
@@ -42,8 +43,8 @@ contract('Splitter', (accounts) => {
             return instance.balances(carol);
         })
         .then(balanceCarol => {
-            const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol),'ether');
-            assert.equal(balanceCarolEth, 10);
+            const balanceCarolEth = fromWei(balanceCarol);
+            assert.strictEqual(balanceCarolEth, '10');
         });
   });
 
@@ -62,8 +63,8 @@ contract('Splitter', (accounts) => {
             return instance.balances(bob);
         })
         .then(balanceBob => {
-            const balanceBobEth = web3.utils.fromWei(new BN(balanceBob),'ether');
-            assert.equal(balanceBobEth, 0);
+            const balanceBobEth = fromWei(balanceBob);
+            assert.strictEqual(balanceBobEth, '0');
         })
         .then( _ => {
             return getBalancePromise(bob);
@@ -71,7 +72,7 @@ contract('Splitter', (accounts) => {
         .then(balanceBob => {
             const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceBobEth = web3.utils.fromWei(new BN(balanceBob).add(trxCost),'ether');
-            assert.equal(balanceBobEth, 110);
+            assert.strictEqual(balanceBobEth, '110');
         })
   });
 
@@ -90,8 +91,8 @@ contract('Splitter', (accounts) => {
             return instance.balances(carol);
         })
         .then(balanceCarol => {
-            const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol),'ether');
-            assert.equal(balanceCarolEth, 0);
+            const balanceCarolEth = fromWei(balanceCarol);
+            assert.strictEqual(balanceCarolEth, '0');
         })
         .then( _ => {
             return getBalancePromise(carol);
@@ -99,7 +100,7 @@ contract('Splitter', (accounts) => {
         .then(balanceCarol => {
             const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
-            assert.equal(balanceCarolEth, 110);
+            assert.strictEqual(balanceCarolEth, '110');
             console.log(balanceCarolEth);
          })
   });
