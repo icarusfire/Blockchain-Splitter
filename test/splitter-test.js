@@ -1,5 +1,5 @@
-const Splitter = artifacts.require("Splitter");
 Promise = require("bluebird");
+const Splitter = artifacts.require("Splitter");
 const truffleAssert = require('truffle-assertions');
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 const BN = web3.utils.BN;
@@ -99,7 +99,6 @@ it("Carol can withdraw funds", function() {
             const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
             assert.strictEqual(balanceCarolEth, '110');
-            console.log(balanceCarolEth);
          })
   });
 
