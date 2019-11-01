@@ -4,10 +4,7 @@ const truffleAssert = require('truffle-assertions');
 
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 var BN = web3.utils.BN;
-
-const gasUsedForWithdraw = new BN(21824);
 const gasPrice = new BN(1000000);
-const trxCost = gasUsedForWithdraw.mul(gasPrice);
 
 const amountToSend = web3.utils.toWei(new BN(20));
 const amountToDraw = web3.utils.toWei(new BN(10));
@@ -51,10 +48,15 @@ contract('Splitter', (accounts) => {
   });
 
   it("Bob can withdraw funds", function() {
+    var gasUsed;
     return Splitter.deployed()
         .then(instance => {
-            instance.withdraw(amountToDraw, {from: bob, gasPrice: gasPrice });
-            return instance;
+            trx = instance.withdraw(amountToDraw, {from: bob, gasPrice: gasPrice });
+            return trx;
+        })
+        .then(trx => {
+            gasUsed = trx.receipt.gasUsed;
+            return Splitter.deployed();
         })
         .then(instance => {
             return instance.balances(bob);
@@ -67,16 +69,22 @@ contract('Splitter', (accounts) => {
             return getBalancePromise(bob);
         })
         .then(balanceBob => {
+            const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceBobEth = web3.utils.fromWei(new BN(balanceBob).add(trxCost),'ether');
             assert.equal(balanceBobEth, 110);
         })
   });
 
   it("Carol can withdraw funds", function() {
+    var gasUsed;
     return Splitter.deployed()
         .then(instance => {
-            instance.withdraw(amountToDraw, {from: carol, gasPrice: gasPrice});
-            return instance;
+            trx = instance.withdraw(amountToDraw, {from: carol, gasPrice: gasPrice});
+            return trx;
+        })
+        .then(trx => {
+            gasUsed = trx.receipt.gasUsed;
+            return Splitter.deployed();
         })
         .then(instance => {
             return instance.balances(carol);
@@ -86,14 +94,14 @@ contract('Splitter', (accounts) => {
             assert.equal(balanceCarolEth, 0);
         })
         .then( _ => {
-          return getBalancePromise(carol);
+            return getBalancePromise(carol);
         })
         .then(balanceCarol => {
-          const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
-          assert.equal(balanceCarolEth, 110);
-          console.log(balanceCarolEth);
+            const trxCost = new BN(gasUsed).mul(gasPrice);
+            const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
+            assert.equal(balanceCarolEth, 110);
+            console.log(balanceCarolEth);
          })
   });
-
 
 });

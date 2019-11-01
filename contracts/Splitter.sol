@@ -3,8 +3,8 @@ import "./SafeMath.sol";
 
 contract Splitter {
     using SafeMath for uint256;
-    event LogSplitEvent(address sender, uint256 amountToBeSplitted, address addressRecp1, address addressRecp2);
-    event LogWithdrawEvent(address sender, uint256 amountDrawn);
+    event LogSplitEvent(address indexed sender, uint256 amountToBeSplitted, address indexed addressRecp1, address indexed addressRecp2);
+    event LogWithdrawEvent(address indexed sender, uint256 amountDrawn);
 
     address constant NULL = address(0);
     mapping(address => uint256) public balances;
