@@ -18,7 +18,9 @@ contract Splitter {
         uint256 remaining = msg.value.mod(2);
         balances[recp1] = balances[recp1].add(amount);
         balances[recp2] = balances[recp2].add(amount);
-        balances[msg.sender] = balances[msg.sender].add(remaining);
+        if(remaining != 0){
+            balances[msg.sender] = balances[msg.sender].add(remaining);
+        }
         emit LogSplitEvent(msg.sender, msg.value, recp1, recp2);
     }
 
