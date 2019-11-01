@@ -8,8 +8,6 @@ contract Splitter {
 
     mapping(address => uint256) public balances;
 
-    constructor() public {}
-
     function splitEther(address recp1, address recp2) public payable{
         require(msg.value > 0, "Split amount should be higher than 0");
         require(recp1 != address(0) && recp2 != address(0), "Recipient addresses should not be empty");
