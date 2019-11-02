@@ -1,7 +1,9 @@
-pragma solidity 0.5.8;
-import "./SafeMath.sol";
+pragma solidity 0.5.10;
 
-contract Splitter {
+import "./openzeppelin/contracts/math/SafeMath.sol";
+import "./openzeppelin/contracts/lifecycle/Pausable.sol";
+
+contract Splitter is Pausable{
     using SafeMath for uint256;
     event LogSplitEvent(address indexed sender, uint256 amountToBeSplitted, address indexed recp1, address indexed recp2);
     event LogWithdrawEvent(address indexed sender, uint256 amountDrawn);
