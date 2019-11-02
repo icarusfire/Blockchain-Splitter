@@ -4,8 +4,8 @@ const truffleAssert = require('truffle-assertions');
 const getBalancePromise = Promise.promisify(web3.eth.getBalance);
 const BN = web3.utils.BN;
 const gasPrice = new BN(1000000);
-const amountToSend = web3.utils.toWei(new BN(2));
-const amountToDraw = web3.utils.toWei(new BN(1));
+const amountToSend = web3.utils.toWei("0.2", "ether");
+const amountToDraw = web3.utils.toWei("0.1", "ether");
 
 var fromWei = function(balance){return web3.utils.fromWei(new BN(balance),'ether');}
 
@@ -32,7 +32,7 @@ it("Bob's balance should have 10 ether", function() {
         })
         .then(balanceBob => {
             const balanceBobEth = fromWei(balanceBob);
-            assert.strictEqual(balanceBobEth, '1');
+            assert.strictEqual(balanceBobEth, '0.1');
         })
   });
 
@@ -43,7 +43,7 @@ it("Carol's balance should have 10 ether", function() {
         })
         .then(balanceCarol => {
             const balanceCarolEth = fromWei(balanceCarol);
-            assert.strictEqual(balanceCarolEth, '1');
+            assert.strictEqual(balanceCarolEth, '0.1');
         });
   });
 
@@ -62,7 +62,7 @@ it("Bob can withdraw funds", function() {
         })
         .then(balanceBob => {
             const balanceBobEth = fromWei(balanceBob);
-            assert.strictEqual(balanceBobEth, '1');
+            assert.strictEqual(balanceBobEth, '0.1');
         })
         .then( _ => {
             return getBalancePromise(bob);
@@ -70,7 +70,7 @@ it("Bob can withdraw funds", function() {
         .then(balanceBob => {
             const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceBobEth = web3.utils.fromWei(new BN(balanceBob).add(trxCost),'ether');
-            assert.strictEqual(balanceBobEth, '101');
+            assert.strictEqual(balanceBobEth, '100.1');
         })
   });
 
@@ -89,7 +89,7 @@ it("Carol can withdraw funds", function() {
     })
         .then(balanceCarol => {
             const balanceCarolEth = fromWei(balanceCarol);
-            assert.strictEqual(balanceCarolEth, '2');
+            assert.strictEqual(balanceCarolEth, '0.2');
         })
         .then( _ => {
             return getBalancePromise(carol);
@@ -97,7 +97,7 @@ it("Carol can withdraw funds", function() {
         .then(balanceCarol => {
             const trxCost = new BN(gasUsed).mul(gasPrice);
             const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
-            assert.strictEqual(balanceCarolEth, '101');
+            assert.strictEqual(balanceCarolEth, '100.1');
          })
   });
 
