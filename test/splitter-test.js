@@ -1,14 +1,14 @@
 Promise = require("bluebird");
 const Splitter = artifacts.require("Splitter");
 const truffleAssert = require('truffle-assertions');
-const getBalancePromise = Promise.promisify(web3.eth.getBalance);
+const getBalance = Promise.promisify(web3.eth.getBalance);
 const BN = web3.utils.BN;
 const gasPrice = new BN(1000000);
 const amountToSend = web3.utils.toWei("0.2", "ether");
 const amountToDraw = web3.utils.toWei("0.1", "ether");
 
-var toEther = function(balance){return web3.utils.fromWei(new BN(balance),'ether');}
-
+var toEther = function(balance) { return web3.utils.fromWei(new BN(balance),'ether'); }
+var expectedBalance = function (balance, gasUsed) { return web3.utils.fromWei(new BN(balance).add(new BN(gasUsed).mul(gasPrice)), 'ether'); }
 
 contract('Splitter', (accounts) => {
     let instance;
@@ -44,12 +44,8 @@ contract('Splitter', (accounts) => {
                 return instance.balances(bob);
             })
             .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0'))
-            .then( _ => getBalancePromise(bob))
-            .then(balanceBob => {
-                const trxCost = new BN(gasUsed).mul(gasPrice);
-                const balanceBobEth = web3.utils.fromWei(new BN(balanceBob).add(trxCost),'ether');
-                assert.strictEqual(balanceBobEth, '100.1');
-            })
+            .then( _ => getBalance(bob))
+            .then(balanceBob => assert.strictEqual(expectedBalance(balanceBob, gasUsed), '100.1'))
         });
 
     it("Carol can withdraw funds", function() {
@@ -61,12 +57,8 @@ contract('Splitter', (accounts) => {
                 return instance.balances(carol);
             })
             .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '0'))
-            .then( _ => getBalancePromise(carol))
-            .then(balanceCarol => {
-                const trxCost = new BN(gasUsed).mul(gasPrice);
-                const balanceCarolEth = web3.utils.fromWei(new BN(balanceCarol).add(trxCost),'ether');
-                assert.strictEqual(balanceCarolEth, '100.1');
-            })
+            .then( _ => getBalance(carol))
+            .then(balanceCarol => assert.strictEqual(expectedBalance(balanceCarol, gasUsed), '100.1'))
         });
 
 });
