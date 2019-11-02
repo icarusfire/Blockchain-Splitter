@@ -12,21 +12,12 @@ var expectedBalance = function (balance, gasUsed) { return web3.utils.fromWei(ne
 
 contract('Splitter', (accounts) => {
     let instance;
-    const [ alice, bob, carol, owner ] = accounts;
+    const [ alice, bob, carol, owner, mike, noah, jack ] = accounts;
 
     beforeEach(async function() {
             instance = await Splitter.new( {from: owner} )
         });
-
-    it("Should emit events after splitting Ether", function() {
-        return instance.splitEther(bob, carol,{from: alice, value:amountToSend }) 
-            .then( tx => {
-                truffleAssert.eventEmitted(tx, 'LogSplitEvent', (ev) => {
-                    return ev.addressRecp1 === bob && ev.addressRecp2 === carol;
-                });
-            })
-        });
-
+         
     it("Bob and Carol's balances should be 0.1 after split", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
             .then( _ => instance.balances(bob))
@@ -60,5 +51,24 @@ contract('Splitter', (accounts) => {
             .then( _ => getBalance(carol))
             .then(balanceCarol => assert.strictEqual(expectedBalance(balanceCarol, gasUsed), '100.1'))
         });
+
+    it("Should emit events after splitting Ether", function() {
+        return instance.splitEther(bob, carol,{from: alice, value:amountToSend }) 
+            .then( tx => {
+                truffleAssert.eventEmitted(tx, 'LogSplitEvent', (event) => {
+                    return event.recp1 === bob && event.recp2 === carol && event.amountToBeSplitted.cmp(new BN(amountToSend)) === 0 && event.sender === alice;
+                });
+            })
+        });
+
+    it("Should emit events after withdraw", function() {
+        return instance.splitEther(mike, noah, {from: jack, value:amountToSend })
+            .then( _ => instance.withdraw(amountToDraw, { from: noah, gasPrice: gasPrice }))
+            .then( tx => {
+                truffleAssert.eventEmitted(tx, 'LogWithdrawEvent', (event) => {
+                    return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === noah;
+                });
+            })
+        });      
 
 });
