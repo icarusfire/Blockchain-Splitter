@@ -5,6 +5,7 @@ const getBalance = Promise.promisify(web3.eth.getBalance);
 const BN = web3.utils.BN;
 const gasPrice = new BN(1000000);
 const amountToSend = web3.utils.toWei("0.2", "ether");
+const amountToSendBig = web3.utils.toWei("3.48", "ether");
 const amountToDraw = web3.utils.toWei("0.1", "ether");
 
 var toEther = function(balance) { return web3.utils.fromWei(new BN(balance),'ether'); }
@@ -18,14 +19,23 @@ contract('Splitter', (accounts) => {
             instance = await Splitter.new( {from: owner} )
         });
          
-    it("Bob and Carol's balances should be 0.1 after split", function() {
+    it("Bob and Carol's balances should be 0.1 after receiving a split", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
             .then( _ => instance.balances(bob))
             .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0.1'))
             .then( _ => instance.balances(carol))
             .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '0.1'))     
         });
-    
+
+    it("Bob and Carol's balances should be 1.84 after receiving 2 splits", function() {
+        return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
+            .then (_ => instance.splitEther(bob, carol, { from: alice, value:amountToSendBig }))
+            .then( _ => instance.balances(bob))
+            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '1.84'))
+            .then( _ => instance.balances(carol))
+            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '1.84'))     
+        });        
+        
     it("Bob can withdraw funds", function() {
         var gasUsed;
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
