@@ -14,7 +14,7 @@ var expectedBalanceDifference = function (initialBalance, balance, gasUsed) { re
 contract('Splitter', (accounts) => {
     console.log("Current host:", web3.currentProvider.host);
     let instance;
-    const [ owner, bob, carol, alice] = accounts;
+    const [ owner, alice, bob, carol] = accounts;
 
     beforeEach(async function() {
             instance = await Splitter.new( {from: owner} )
@@ -98,10 +98,10 @@ contract('Splitter', (accounts) => {
             await truffleAssert.reverts(instance.pause( {from: bob} ), "caller does not have the Pauser role");
         });
 
-    it("should abort with an error when Paused", async function() {
-            await instance.pause({ from: owner});
-            await truffleAssert.reverts(instance.withdraw(amountToDraw, { from: bob, gasPrice: gasPrice }), "Pausable: paused");
-            await truffleAssert.reverts(instance.splitEther(bob, carol, {from: alice, value:amountToSend }), "Pausable: paused");
-        });
+    it("should abort with an error when Paused", function() {
+        return instance.pause({ from: owner})
+            .then(truffleAssert.reverts(instance.withdraw(amountToDraw, { from: bob, gasPrice: gasPrice }), "Pausable: paused"))
+            .then(truffleAssert.reverts(instance.splitEther(bob, carol, {from: alice, value:amountToSend }), "Pausable: paused"));
+    });        
           
 });
