@@ -1,9 +1,9 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.10;
 
 import "./SafeMath.sol";
 import "./Pausable.sol";
 
-contract Splitter is Pausable{
+contract Splitter is Pausable {
     using SafeMath for uint256;
     event LogSplitEvent(address indexed sender, uint256 amountToBeSplitted, address indexed recp1, address indexed recp2);
     event LogWithdrawEvent(address indexed sender, uint256 amountDrawn);

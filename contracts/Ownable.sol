@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.10;
 
 contract Ownable{
 
@@ -17,6 +17,5 @@ contract Ownable{
         require (msg.sender == owner, "Only owner can set a new owner");
         owner = _newOwner;
     }
-
 
 }
