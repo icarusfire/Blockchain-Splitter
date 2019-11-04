@@ -95,7 +95,7 @@ contract('Splitter', (accounts) => {
         });     
       
     it("Bob can't pause", async function() {
-            await truffleAssert.reverts(instance.pause( {from: bob} ), "caller does not have the Pauser role");
+            await truffleAssert.reverts(instance.pause( {from: bob} ), "Only owner can execute this action");
         });
 
     it("should abort with an error when Paused", function() {
