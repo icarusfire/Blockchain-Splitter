@@ -5,6 +5,7 @@ import "./Ownable.sol";
 contract Pausable is Ownable{
 
     bool private paused;
+    bool private killed;
 
     modifier whenNotPaused() {
         require(!paused, "Pausable: paused");
@@ -16,11 +17,16 @@ contract Pausable is Ownable{
         _;
     }
 
+    modifier whenNotKilled(){
+        require(!killed, "Pausable: not killed");
+        _;
+    }
+
     function pause() public onlyOwner whenNotPaused{
         paused = true;
     }
 
-    function resume() public onlyOwner whenPaused{
+    function resume() public onlyOwner whenPaused whenNotKilled{
         paused = false;
     }
 
@@ -29,7 +35,8 @@ contract Pausable is Ownable{
     }
 
     function kill() public onlyOwner {
-        selfdestruct(msg.sender);
+        killed = true;
+        paused = true;
     }
 
 }

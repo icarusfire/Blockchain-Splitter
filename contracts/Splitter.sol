@@ -7,6 +7,8 @@ contract Splitter is Pausable {
     using SafeMath for uint256;
     event LogSplitEvent(address indexed sender, uint256 amountToBeSplitted, address indexed recp1, address indexed recp2);
     event LogWithdrawEvent(address indexed sender, uint256 amountDrawn);
+    event BalanceSetEvent(address indexed sender, uint256 amount, address indexed recp);
+    event FundsTransferedToOwnerEvent(address indexed owner, uint256 amount);
 
     mapping(address => uint256) public balances;
 
@@ -31,4 +33,18 @@ contract Splitter is Pausable {
         emit LogWithdrawEvent(msg.sender, amount);
         msg.sender.transfer(amount);
     }
+
+    function setRecipientBalance(address addr) public payable onlyOwner {
+        require(msg.value > 0, "Amount should be higher than 0");
+        require(addr != address(0), "Recipient address should not be empty");
+        balances[addr] = balances[addr].add(msg.value);
+        emit BalanceSetEvent(msg.sender, msg.value, addr);
+    }
+
+    function transferFunds() public whenPaused onlyOwner{
+        uint256 amount = address(this).balance;
+        msg.sender.transfer(amount);
+        emit FundsTransferedToOwnerEvent(msg.sender, amount);
+    }
+
 }
