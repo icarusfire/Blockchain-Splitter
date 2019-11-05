@@ -12,6 +12,10 @@ contract Splitter is Pausable {
 
     mapping(address => uint256) public balances;
 
+    constructor(bool _isPaused) public{
+        if(_isPaused) {pause();}
+    }
+
     function splitEther(address recp1, address recp2) public payable whenNotPaused {
         require(msg.value > 0, "Split amount should be higher than 0");
         require(recp1 != address(0) && recp2 != address(0), "Recipient addresses should not be empty");

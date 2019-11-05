@@ -6,7 +6,7 @@ contract Ownable{
 
     event OwnerChangedEvent(address indexed from, address indexed to);
 
-    constructor() public {
+    constructor() internal {
         owner = msg.sender;
     }
 

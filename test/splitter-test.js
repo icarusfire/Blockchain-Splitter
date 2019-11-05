@@ -18,7 +18,7 @@ contract('Splitter', (accounts) => {
     const [ owner, alice, bob, carol] = accounts;
 
     beforeEach(async function() {
-            instance = await Splitter.new( {from: owner} )
+            instance = await Splitter.new(false, {from: owner} )
         });
          
     it("bob and Carol's balances should be 0.1 after receiving a split", function() {
