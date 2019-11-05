@@ -4,6 +4,8 @@ contract Ownable{
 
     address private owner;
 
+    event OwnerChangedEvent(address indexed from, address indexed to);
+
     constructor() public {
         owner = msg.sender;
     }
@@ -13,9 +15,10 @@ contract Ownable{
         _;
     }
 
-    function setOwner(address _newOwner) public {
-        require (msg.sender == owner, "Only owner can set a new owner");
+    function setOwner(address _newOwner) public onlyOwner {
+        require(_newOwner != address(0), "New Owner cant be empty");
         owner = _newOwner;
+        emit OwnerChangedEvent(msg.sender, owner);
     }
 
 }

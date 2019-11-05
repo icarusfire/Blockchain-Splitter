@@ -105,7 +105,16 @@ contract('Splitter', (accounts) => {
                     return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === bob;
                 });
             })
-        });     
+        });
+    
+    it("should emit events after owner changed", function() {
+        return instance.setOwner(bob, {from: owner})
+            .then( tx => {
+                truffleAssert.eventEmitted(tx, 'OwnerChangedEvent', (event) => {
+                    return event.from === owner && event.to === bob;
+                });
+            })
+        });    
       
     it("Bob can't pause", async function() {
             await truffleAssert.reverts(instance.pause( {from: bob} ), "Only owner can execute this action");
