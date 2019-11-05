@@ -16,11 +16,11 @@ contract Pausable is Ownable{
         _;
     }
 
-    function pause() public onlyOwner {
+    function pause() public onlyOwner whenNotPaused{
         paused = true;
     }
 
-    function unpause() public onlyOwner {
+    function resume() public onlyOwner whenPaused{
         paused = false;
     }
 
