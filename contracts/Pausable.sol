@@ -7,6 +7,11 @@ contract Pausable is Ownable{
     bool private paused;
     bool private killed;
 
+    constructor(bool _pausable) internal {
+        paused = _pausable;
+    }
+
+
     modifier whenNotPaused() {
         require(!paused, "Pausable: paused");
         _;
