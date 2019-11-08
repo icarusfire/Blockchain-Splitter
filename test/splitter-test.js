@@ -133,18 +133,5 @@ contract('Splitter', (accounts) => {
             .then(truffleAssert.reverts(instance.withdraw(amountToDraw, { from: bob}), "Pausable: paused"))
             .then(truffleAssert.reverts(instance.splitEther(bob, carol, {from: alice, value:amountToSend }), "Pausable: paused"));
     });
-    
-    it("bob's and contract's balance should be 0.4 after receiving funds from owner", function() {
-        return instance.setRecipientBalance(bob, { from: owner, value:amountToSend })
-            .then( _ => instance.balances(bob))
-            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0.2'))
-            .then( _ => getBalance(instance.address))
-            .then(balanceContract => assert.strictEqual(toEther(balanceContract), '0.2'))
-            .then( _ => instance.setRecipientBalance(bob, { from: owner, value:amountToSend }))
-            .then( _ => instance.balances(bob))
-            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0.4'))
-            .then( _ => getBalance(instance.address))
-            .then(balanceContract => assert.strictEqual(toEther(balanceContract), '0.4'));   
-        });
-         
+             
 });

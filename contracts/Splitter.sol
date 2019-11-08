@@ -37,13 +37,6 @@ contract Splitter is Pausable {
         msg.sender.transfer(amount);
     }
 
-    function setRecipientBalance(address addr) public payable onlyOwner {
-        require(msg.value > 0, "Amount should be higher than 0");
-        require(addr != address(0), "Recipient address should not be empty");
-        balances[addr] = balances[addr].add(msg.value);
-        emit BalanceSetEvent(msg.sender, msg.value, addr);
-    }
-
     function transferFunds() public whenPaused onlyOwner{
         uint256 amount = address(this).balance;
         msg.sender.transfer(amount);
