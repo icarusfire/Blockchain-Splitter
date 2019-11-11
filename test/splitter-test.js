@@ -1,16 +1,20 @@
 Promise = require("bluebird");
 const Splitter = artifacts.require("Splitter");
 const truffleAssert = require('truffle-assertions');
-const getBalance = Promise.promisify(web3.eth.getBalance);
+const getBalance = web3.eth.getBalance;
 const getTransaction =  Promise.promisify(web3.eth.getTransaction);
+const { BN, toWei } = web3.utils;
+const amountToSend = toWei("0.2", "ether");
+const amountToSendBig = toWei("3.48", "ether");
+const amountToDraw = toWei("0.1", "ether");
 
-const BN = web3.utils.BN;
-const amountToSend = web3.utils.toWei("0.2", "ether");
-const amountToSendBig = web3.utils.toWei("3.48", "ether");
-const amountToDraw = web3.utils.toWei("0.1", "ether");
-
-var toEther = function(balance) { return web3.utils.fromWei(new BN(balance),'ether'); }
-var expectedBalanceDifference = function (initialBalance, balance, gasUsed, gasPrice) { return web3.utils.fromWei(new BN(balance).add(new BN(gasUsed).mul(gasPrice)).sub(new BN(initialBalance)), 'ether'); }
+const toEther = function(balance) { return web3.utils.fromWei(new BN(balance), 'ether'); }
+const expectedBalanceDifference = function (initialBalance, balance, gasUsed, gasPrice) {
+     return web3.utils.fromWei(new BN(balance)
+        .add(new BN(gasUsed)
+        .mul(gasPrice))
+        .sub(new BN(initialBalance)), 'ether'); 
+    }
 
 contract('Splitter', (accounts) => {
     console.log("Current host:", web3.currentProvider.host);
@@ -18,7 +22,7 @@ contract('Splitter', (accounts) => {
     const [ owner, alice, bob, carol] = accounts;
 
     beforeEach(async function() {
-            instance = await Splitter.new(false, {from: owner} )
+            instance = await Splitter.new(false, { from: owner } )
         });
          
     it("bob and Carol's balances should be 0.1 after receiving a split", function() {
@@ -31,7 +35,7 @@ contract('Splitter', (accounts) => {
 
     it("bob and Carol's balances should be 1.84 after receiving 2 splits", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
-            .then (_ => instance.splitEther(bob, carol, { from: alice, value:amountToSendBig }))
+            .then( _ => instance.splitEther(bob, carol, { from: alice, value:amountToSendBig }))
             .then( _ => instance.balances(bob))
             .then(balanceBob => assert.strictEqual(toEther(balanceBob), '1.84'))
             .then( _ => instance.balances(carol))
@@ -39,16 +43,16 @@ contract('Splitter', (accounts) => {
         });        
         
     it("bob can withdraw funds", function() {
-        var gasUsed;
-        var gasPrice;
-        var balanceBobInitial;
+        let gasUsed;
+        let gasPrice;
+        let balanceBobInitial;
 
         return getBalance(bob)
             .then(_bobInitalBalance => {
                 balanceBobInitial = _bobInitalBalance;
                 return instance.splitEther(bob, carol, {from: alice, value:amountToSend })
             })
-            .then( _ => instance.withdraw(amountToDraw, { from: bob, gasPrice: gasPrice }))
+            .then( _ => instance.withdraw(amountToDraw, { from: bob }))
             .then(trx => {
                 gasUsed = trx.receipt.gasUsed;
                 return getTransaction(trx.tx);
@@ -64,16 +68,16 @@ contract('Splitter', (accounts) => {
         });
 
     it("carol can withdraw funds", function() {
-        var gasUsed;
-        var gasPrice;
-        var balanceCarolInitial;
+        let gasUsed;
+        let gasPrice;
+        let balanceCarolInitial;
 
         return getBalance(carol)
             .then(_carolInitalBalance => {
                 balanceCarolInitial = _carolInitalBalance;
                 return instance.splitEther(bob, carol, {from: alice, value:amountToSend })
             })
-            .then( _ => instance.withdraw(amountToDraw, { from: carol, gasPrice: gasPrice }))
+            .then( _ => instance.withdraw(amountToDraw, { from: carol }))
             .then(trx => {
                 gasUsed = trx.receipt.gasUsed;
                 return getTransaction(trx.tx);
