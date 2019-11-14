@@ -3,14 +3,14 @@ const Splitter = artifacts.require("Splitter");
 const truffleAssert = require('truffle-assertions');
 const getBalance = web3.eth.getBalance;
 const getTransaction =  Promise.promisify(web3.eth.getTransaction);
-const { BN, toWei } = web3.utils;
+const { BN, toWei,fromWei } = web3.utils;
 const amountToSend = toWei("0.2", "ether");
 const amountToSendBig = toWei("3.48", "ether");
 const amountToDraw = toWei("0.1", "ether");
 
-const toEther = function(balance) { return web3.utils.fromWei(new BN(balance), 'ether'); }
+const toEther = function(balance) { return fromWei(new BN(balance), 'ether'); }
 const expectedBalanceDifference = function (initialBalance, balance, gasUsed, gasPrice) {
-     return web3.utils.fromWei(new BN(balance)
+     return fromWei(new BN(balance)
         .add(new BN(gasUsed)
         .mul(gasPrice))
         .sub(new BN(initialBalance)), 'ether'); 
