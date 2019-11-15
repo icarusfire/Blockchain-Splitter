@@ -45,18 +45,18 @@ describe("Splitter", function() {
  it("bob and Carol's balances should be 0.1 after receiving a split", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
             .then( _ => instance.balances(bob))
-            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0.1'))
+            .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '0.1'))
             .then( _ => instance.balances(carol))
-            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '0.1'))     
+            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '0.1'))     
         });
 
     it("bob and Carol's balances should be 1.84 after receiving 2 splits", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
             .then( _ => instance.splitEther(bob, carol, { from: alice, value:amountToSendBig }))
             .then( _ => instance.balances(bob))
-            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '1.84'))
+            .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '1.84'))
             .then( _ => instance.balances(carol))
-            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '1.84'))     
+            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '1.84'))     
         });        
         
     it("bob can withdraw funds", function() {
@@ -79,9 +79,9 @@ describe("Splitter", function() {
                 return;
             })
             .then ( _ => instance.balances(bob))
-            .then(balanceBob => assert.strictEqual(toEther(balanceBob), '0'))
+            .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '0'))
             .then( _ => getBalance(bob))
-            .then(balanceBob => assert.strictEqual(expectedBalanceDifference(balanceBobInitial, balanceBob, gasUsed, new BN(gasPrice)), '0.1'))
+            .then(balanceBob => assert.strictEqual(expectedBalanceDifference(balanceBobInitial, balanceBob, gasUsed, new BN(gasPrice)).toString(10), '0.1'))
         });
 
     it("carol can withdraw funds", function() {
@@ -104,9 +104,9 @@ describe("Splitter", function() {
                 return;
             })
             .then ( _ => instance.balances(carol))
-            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol), '0'))
+            .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '0'))
             .then( _ => getBalance(carol))
-            .then(balanceCarol => assert.strictEqual(expectedBalanceDifference(balanceCarolInitial, balanceCarol, gasUsed, new BN(gasPrice)), '0.1'))
+            .then(balanceCarol => assert.strictEqual(expectedBalanceDifference(balanceCarolInitial, balanceCarol, gasUsed, new BN(gasPrice)).toString(10), '0.1'))
         });
 
     it("should emit events after splitting Ether", function() {

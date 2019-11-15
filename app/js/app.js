@@ -93,7 +93,6 @@ const split = function() {
         // Now we wait for the tx to be mined.
         .then(txObj => {
             const receipt = txObj.receipt;
-            console.log("got receipt", receipt);
             if (!receipt.status) {
                 console.error("Wrong status");
                 console.error(receipt);
@@ -105,6 +104,8 @@ const split = function() {
             } else {
                 console.log(receipt.logs[0]);
                 $("#status").html("Transfer executed");
+                console.log("got receipt", receipt);
+
             }
             // Make sure we update the UI.
             return web3.eth.getBalance(window.account);
