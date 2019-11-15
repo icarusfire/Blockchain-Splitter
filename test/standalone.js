@@ -165,11 +165,13 @@ describe("Splitter", function() {
         const amountToDraw = toWei("1.2", "ether");
         evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
         await instance.splitEther(evilContract, mike, {from: alice, value:toWei("4", "ether")});
-        
+        await instance.splitEther(evilContractOwner, mike, {from: alice, value:toWei("4", "ether")});
+
         let evilContractBalance = await instance.balances(evilContract);
         assert.strictEqual(toEther(evilContractBalance.toString(10)), '2');
 
-        let tx = await evilInstance.withdrawFunds(evilInstance.address, amountToDraw, {from: evilContractOwner});
+        let tx = await evilInstance.withdrawFunds(instance.address, amountToDraw, {from: evilContractOwner});
+
         let evilContractBalanceAfter = await instance.balances(evilContract);
         assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
 
