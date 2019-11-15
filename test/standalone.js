@@ -177,6 +177,30 @@ describe("Splitter", function() {
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
             return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
+        
     });
+
+    it("resists evil ops2", async function() {
+        const amountToDraw = toWei("1.2", "ether");
+        evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
+        evilInstance.send(amountToDraw, {from:bob} );
+
+        await instance.splitEther(evilInstance.address, mike, {from: alice, value:toWei("4", "ether")});
+
+        let evilContractBalance = await instance.balances(evilInstance.address);
+        assert.strictEqual(toEther(evilContractBalance.toString(10)), '2');
+
+        let tx = await instance.withdraw(amountToDraw, {from: evilInstance.address});
+        console.log(tx);
+        let evilContractBalanceAfter = await instance.balances(evilInstance.address);
+        assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
+
+        truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
+            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
+        });
+        
+    });
+
+    
 
 });
