@@ -162,16 +162,19 @@ describe("Splitter", function() {
     });
 
     it("resists evil ops", async function() {
-        const amountToDraw = toWei("0.1", "ether");
+        const amountToDraw = toWei("1.2", "ether");
         evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
-        await instance.splitEther(evilContract, mike, {from: alice, value:toWei("2", "ether")});
+        await instance.splitEther(evilContract, mike, {from: alice, value:toWei("4", "ether")});
         
-        let balance = await instance.balances(evilContract);
-        assert.strictEqual(toEther(balance.toString(10)), '1');
-        let tx = await evilInstance.withdrawFunds(instance.address, amountToDraw, {from: evilContractOwner});
+        let evilContractBalance = await instance.balances(evilContract);
+        assert.strictEqual(toEther(evilContractBalance.toString(10)), '2');
+
+        let tx = await evilInstance.withdrawFunds(evilInstance.address, amountToDraw, {from: evilContractOwner});
+        let evilContractBalanceAfter = await instance.balances(evilContract);
+        assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
 
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedEvent', (event) => {
-            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === evilContract;
+            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === evilContractOwner;
         });
     });
 
