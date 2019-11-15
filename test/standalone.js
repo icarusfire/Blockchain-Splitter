@@ -170,7 +170,7 @@ describe("Splitter", function() {
         let tx = await evilInstance.withdrawFunds(instance.address, toWei("0.1", "ether"), {from: evilContractOwner});
 
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedEvent', (event) => {
-            return event.from === owner && event.to === bob;
+            return event.from === owner && event.to === evilContract;
         });
     });
 
