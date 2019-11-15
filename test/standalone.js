@@ -41,7 +41,7 @@ describe("Splitter", function() {
         Splitter.setNetwork(networkId);
         EvilSplitterConsumer.setNetwork(networkId);
 
-        [owner, alice, bob, carol, mike, evilContract, evilContractOwner] = accounts;
+        [owner, alice, bob, carol, mike, evilContractOwner] = accounts;
     });
     
     beforeEach(async function() {
@@ -164,19 +164,18 @@ describe("Splitter", function() {
     it("resists evil ops", async function() {
         const amountToDraw = toWei("1.2", "ether");
         evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
-        await instance.splitEther(evilContract, mike, {from: alice, value:toWei("4", "ether")});
-        await instance.splitEther(evilContractOwner, mike, {from: alice, value:toWei("4", "ether")});
+        await instance.splitEther(evilInstance.address, mike, {from: alice, value:toWei("4", "ether")});
 
-        let evilContractBalance = await instance.balances(evilContract);
+        let evilContractBalance = await instance.balances(evilInstance.address);
         assert.strictEqual(toEther(evilContractBalance.toString(10)), '2');
 
         let tx = await evilInstance.withdrawFunds(instance.address, amountToDraw, {from: evilContractOwner});
 
-        let evilContractBalanceAfter = await instance.balances(evilContract);
+        let evilContractBalanceAfter = await instance.balances(evilInstance.address);
         assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
 
-        truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedEvent', (event) => {
-            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === evilContractOwner;
+        truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
+            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
     });
 
