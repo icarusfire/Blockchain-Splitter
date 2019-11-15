@@ -10,7 +10,7 @@ contract EvilSplitterConsumer {
         emit LogConsumerFundsReceivedEvent(msg.sender, msg.value);
      }
 
-    function withdrawFunds(Splitter splitter, uint256 amount) public payable {
+    function withdrawFunds(Splitter splitter, uint256 amount) public {
         require (amount > 0, "Withdraw amount should be higher than 0");
         splitter.withdraw(amount);
     }
