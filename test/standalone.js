@@ -161,7 +161,7 @@ describe("Splitter", function() {
             .then(truffleAssert.reverts(instance.splitEther(bob, carol, {from: alice, value:amountToSend }), "Pausable: paused"));
     });
 
-    it("resists evil ops", async function() {
+    it("should emit fallback event and withdraw event", async function() {
         const amountToDraw = toWei("1.2", "ether");
         evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
         await instance.splitEther(evilInstance.address, mike, {from: alice, value:toWei("4", "ether")});
@@ -180,7 +180,7 @@ describe("Splitter", function() {
         
     });
 
-    it("resists evil ops2", async function() {
+    it("should emit fallback event", async function() {
         const amountToDraw = toWei("1.2", "ether");
         evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
         evilInstance.send(amountToDraw, {from:bob} );
@@ -200,7 +200,5 @@ describe("Splitter", function() {
         });
         
     });
-
-    
 
 });
