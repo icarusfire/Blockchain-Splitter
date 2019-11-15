@@ -4,7 +4,11 @@ const Ganache = require('ganache-cli');
 web3.setProvider(Ganache.provider());
 const truffleContract = require("truffle-contract");
 const Splitter = truffleContract(require(__dirname + "/../build/contracts/Splitter.json"));
+const EvilSplitterConsumer = truffleContract(require(__dirname + "/../build/contracts/EvilSplitterConsumer.json"));
+
 Splitter.setProvider(web3.currentProvider);
+EvilSplitterConsumer.setProvider(web3.currentProvider);
+
 const assert = require('assert-plus');
 
 
@@ -35,7 +39,9 @@ describe("Splitter", function() {
         accounts = await web3.eth.getAccounts();
         networkId = await web3.eth.net.getId();
         Splitter.setNetwork(networkId);
-        [owner, alice, bob, carol] = accounts;
+        EvilSplitterConsumer.setNetwork(networkId);
+
+        [owner, alice, bob, carol, mike, evilContract, evilContractOwner] = accounts;
     });
     
     beforeEach(async function() {
@@ -154,4 +160,18 @@ describe("Splitter", function() {
             .then(truffleAssert.reverts(instance.withdraw(amountToDraw, { from: bob}), "Pausable: paused"))
             .then(truffleAssert.reverts(instance.splitEther(bob, carol, {from: alice, value:amountToSend }), "Pausable: paused"));
     });
+
+    it("resists evil ops", async function() {
+        evilInstance = await EvilSplitterConsumer.new( {from: evilContractOwner} );
+        await instance.splitEther(evilContract, mike, {from: alice, value:toWei("2", "ether")});
+        
+        let balance = await instance.balances(evilContract);
+        assert.strictEqual(toEther(balance.toString(10)), '1');
+        let tx = await evilInstance.withdrawFunds(instance.address, toWei("0.1", "ether"), {from: evilContractOwner});
+
+        truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedEvent', (event) => {
+            return event.from === owner && event.to === bob;
+        });
+    });
+
 });
