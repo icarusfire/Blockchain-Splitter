@@ -1,7 +1,6 @@
 pragma solidity 0.5.10;
 
 import "./Splitter.sol";
-import "./SafeMath.sol";
 
 contract EvilSplitterConsumer {
 
