@@ -178,6 +178,9 @@ describe("Splitter", function() {
             return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
         
+        assert.strictEqual(tx.receipt.logs.length, 2);
+
+        
     });
 
 });

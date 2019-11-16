@@ -4,7 +4,6 @@ import "./Splitter.sol";
 import "./SafeMath.sol";
 
 contract EvilSplitterConsumer {
-    using SafeMath for uint256;
 
     event LogConsumerFundsReceivedFallbackEvent(address indexed sender, uint256 amountDrawn, uint256 balance);
 
@@ -13,7 +12,7 @@ contract EvilSplitterConsumer {
      }
 
     function withdrawFunds(Splitter splitter, uint256 amount) public {
-        require (amount > 0, "Withdraw amount should be higher than 0");
+        require (amount > 0, "Evil says, withdraw amount should be higher than 0");
         splitter.withdraw(amount);
     }
 }
