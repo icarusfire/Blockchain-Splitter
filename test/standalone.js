@@ -5,6 +5,8 @@ web3.setProvider(Ganache.provider());
 const truffleContract = require("truffle-contract");
 const Splitter = truffleContract(require(__dirname + "/../build/contracts/Splitter.json"));
 const EvilSplitterConsumer = truffleContract(require(__dirname + "/../build/contracts/EvilSplitterConsumer.json"));
+const createKeccakHash = require('keccak');
+
 
 Splitter.setProvider(web3.currentProvider);
 EvilSplitterConsumer.setProvider(web3.currentProvider);
@@ -177,10 +179,13 @@ describe("Splitter", function() {
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
             return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
-        
-        assert.strictEqual(tx.receipt.logs.length, 2);
 
-        
+        const fallbackEventHash = createKeccakHash('keccak256').update('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)').digest('hex');
+        const withdrawEventHash = createKeccakHash('keccak256').update('LogWithdrawEvent(address,uint256)').digest('hex')
+
+        assert.strictEqual(tx.receipt['rawLogs'].length, 2);
+        assert.strictEqual(withdrawEventHash, tx.receipt['rawLogs'][0]['topics'][0].substring(2));
+        assert.strictEqual(fallbackEventHash, tx.receipt['rawLogs'][1]['topics'][0].substring(2));
     });
 
 });
