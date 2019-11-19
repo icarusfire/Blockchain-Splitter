@@ -8,8 +8,6 @@ Splitter.setProvider(web3.currentProvider);
 EvilSplitterConsumer.setProvider(web3.currentProvider);
 
 const assert = require('assert-plus');
-
-
 Promise = require("bluebird");
 const truffleAssert = require('truffle-assertions');
 const getBalance = web3.eth.getBalance;
