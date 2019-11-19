@@ -168,9 +168,9 @@ describe("Splitter", function() {
         const evilContractBalance = await instance.balances(evilInstance.address);
         assert.strictEqual(toEther(evilContractBalance.toString(10)), '2');
 
-        let tx = await evilInstance.withdrawFunds(instance.address, amountToDraw, {from: evilContractOwner});
+        const tx = await evilInstance.withdrawFunds(instance.address, amountToDraw, {from: evilContractOwner});
 
-        let evilContractBalanceAfter = await instance.balances(evilInstance.address);
+        const evilContractBalanceAfter = await instance.balances(evilInstance.address);
         assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
 
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
