@@ -150,7 +150,7 @@ describe("Splitter", function() {
             await truffleAssert.passes(instance.kill( {from: owner} ));
     });
     
-    it("Owner can't kill when not pausedd", async function() {
+    it("Owner can't kill when not paused", async function() {
             await truffleAssert.reverts(instance.kill( {from: owner} ), "Pausable: not paused");
     });
 
