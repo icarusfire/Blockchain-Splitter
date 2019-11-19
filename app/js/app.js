@@ -43,18 +43,22 @@ window.addEventListener('load', function() {
         })
         .then(accounts => {
             if (accounts.length == 0) {
-                $("#balance").html("N/A");
+                $("#myBalance").html("N/A");
                 throw new Error("No account with which to transact");
             }
             window.account = accounts[0];
             console.log("Account:", window.account);
-			return web3.eth.getBalance(window.account);		
+            $("#myAccountAddress").html(window.account);
+            return web3.eth.getBalance(window.account);	
         })
         // Notice how the conversion to a string is done only when displaying.
-        .then(balance => $("#balance").html(toEther(balance.toString(10))))
+        .then(balance => $("#myBalance").html(toEther(balance.toString(10))))
         .then( _ => Splitter.deployed())
-        .then(deployed => web3.eth.getBalance(deployed.address))		
-        .then(balance => $("#balance2").html(toEther(balance.toString(10))))
+        .then(deployed => {
+            $("#contractAddress").html(deployed.address);
+            return web3.eth.getBalance(deployed.address);
+        })		
+        .then(balance => $("#contractBalance").html(toEther(balance.toString(10))))
         .then(() => $("#send").click(split))
 
         // Never let an error go unlogged.
@@ -67,16 +71,17 @@ const split = function() {
     const gas = 300000; let deployed;
     // We return the whole promise chain so that other parts of the UI can be informed when
     // it is done.
+
     return Splitter.deployed()
         .then(_deployed => {
-            deployed = _deployed;
+            deployed = _deployed; 
             // We simulate the real call and see whether this is likely to work.
             // No point in wasting gas if we have a likely failure.
-            return _deployed.splitEther.call( $("input[name='recipient1']").val(), $("input[name='recipient2']").val(),
+            return _deployed.splitEther.call( $("#recp1Txt").val(), $("#recp2Txt").val(),
 
                 // Giving a string is fine
                 //$("input[name='amount']").val(),
-                { from: window.account, gas: gas, value: toWei($("input[name='amount']").val())});
+                { from: window.account, gas: gas, value: toWei($("#splitAmount").val())});
         })
         .then(success => {
             if (!success) {
@@ -85,10 +90,10 @@ const split = function() {
             console.log("starting split..");
             // Ok, we move onto the proper action.
             return deployed.splitEther(
-                $("input[name='recipient1']").val(),
+                $("#recp1Txt").val(),
                 // Giving a string is fine
-                $("input[name='recipient2']").val(),
-                { from: window.account, gas: gas, value: toWei($("input[name='amount']").val())})
+                $("#recp2Txt").val(),
+                { from: window.account, gas: gas, value: toWei($("#splitAmount").val())})
                 // .sendCoin takes time in real life, so we get the txHash immediately while it 
                 // is mined.
                 .on(
@@ -117,10 +122,15 @@ const split = function() {
             return web3.eth.getBalance(window.account);
 
         })
-        .then(balance => $("#balance").html(toEther(balance.toString(10))))
+        .then(balance => $("#myBalance").html(toEther(balance.toString(10))))
         .then( _ => Splitter.deployed())
         .then(deployed => web3.eth.getBalance(deployed.address))		
-        .then(balance => $("#balance2").html(toEther(balance.toString(10))))
+        .then(balance => $("#contractBalance").html(toEther(balance.toString(10))))
+        .then( _ => deployed.balances($("#recp1Txt").val()))
+        .then(balance1 => $("#recp1Balance").html(toEther(balance1.toString(10))))  
+        .then( _ => deployed.balances($("#recp2Txt").val()))
+        .then(balance2 => $("#recp2Balance").html(toEther(balance2.toString(10))))  
+
         .catch(e => {
             $("#status").html(e.toString());
             console.error(e);
