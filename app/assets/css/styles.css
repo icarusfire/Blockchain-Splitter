@@ -1,0 +1,70 @@
+
+/* @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700"); */
+
+.card {
+  /*border-radius: 10px;*/
+  border-width: 0px;
+}
+
+.card-body {
+  border-radius: 10px;
+}
+
+#recpCardBody {
+  width: 490px;
+  display: inline-block;
+  /*float: left;*/
+  height: 100px;
+}
+
+#recp2Card {
+  display: inline;
+}
+
+#recp1Card {
+  display: inline;
+}
+
+#recp1Card {
+}
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+  padding-left: 15px;
+}
+
+p {
+}
+
+#splitLabel {
+  font-weight: normalold;
+}
+
+#recp1Txt {
+}
+
+#splitAmount {
+  /*border: 3px;*/
+  border-width: 1px;
+  border-color: #ebebeb;
+}
+
+#myAccountAddress {
+  font-weight: normal;
+  font-style: italic;
+}
+
+#contractAddress {
+  font-style: italic;
+  font-size: 12px;
+}
+
+#contractBalance {
+  font-style: italic;
+  font-size: 12px;
+}
+
+#ExpParag {
+  border-radius: 6px;
+  background-color: rgb(221,220,216);
+}
+

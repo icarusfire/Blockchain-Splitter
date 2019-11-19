@@ -1,3 +1,9 @@
+import "../assets/bootstrap/css/bootstrap.min.css";
+import "../assets/fonts/font-awesome.min.css";
+import "../assets/fonts/material-icons.min.css";
+import "../assets/css/styles.css";
+import "../assets/js/jquery.min.js";
+import "../assets/bootstrap/js/bootstrap.min.js";
 
 const Web3 = require("web3");
 const truffleContract = require("truffle-contract");
