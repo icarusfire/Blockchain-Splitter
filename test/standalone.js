@@ -19,7 +19,7 @@ Promise = require("bluebird");
 const truffleAssert = require('truffle-assertions');
 const getBalance = web3.eth.getBalance;
 const getTransaction =  Promise.promisify(web3.eth.getTransaction);
-const { BN, toWei,fromWei } = web3.utils;
+const { BN, toWei,fromWei, sha3 } = web3.utils;
 const amountToSend = toWei("0.2", "ether");
 const amountToSendBig = toWei("3.48", "ether");
 const amountToDraw = toWei("0.1", "ether");
@@ -179,13 +179,13 @@ describe("Splitter", function() {
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
             return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
-
-        const fallbackEventHash = createKeccakHash('keccak256').update('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)').digest('hex');
-        const withdrawEventHash = createKeccakHash('keccak256').update('LogWithdrawEvent(address,uint256)').digest('hex')
+         
+        const fallbackEventHash = sha3 ('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)');
+        const withdrawEventHash = sha3 ('LogWithdrawEvent(address,uint256)');
 
         assert.strictEqual(tx.receipt['rawLogs'].length, 2);
-        assert.strictEqual(withdrawEventHash, tx.receipt['rawLogs'][0]['topics'][0].substring(2));
-        assert.strictEqual(fallbackEventHash, tx.receipt['rawLogs'][1]['topics'][0].substring(2));
+        assert.strictEqual(withdrawEventHash, tx.receipt['rawLogs'][0].topics[0]);
+        assert.strictEqual(fallbackEventHash, tx.receipt['rawLogs'][1].topics[0]);
     });
 
 });
