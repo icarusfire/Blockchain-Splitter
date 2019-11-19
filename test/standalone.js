@@ -123,7 +123,7 @@ describe("Splitter", function() {
             .then( _ => instance.withdraw(amountToDraw, { from: bob }))
             .then( tx => {
                 truffleAssert.eventEmitted(tx, 'LogWithdrawEvent', (event) => {
-                    return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === bob;
+                    return event.amountDrawn.toString(10) == amountToDraw && event.sender === bob;
                 });
             })
     });
@@ -174,7 +174,7 @@ describe("Splitter", function() {
         assert.strictEqual(toEther(evilContractBalanceAfter.toString(10)), '0.8');
 
         truffleAssert.eventEmitted(tx, 'LogConsumerFundsReceivedFallbackEvent', (event) => {
-            return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
+            return event.amountDrawn.toString(10) == amountToDraw && event.sender === instance.address;
         });
          
         const fallbackEventHash = sha3('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)');
