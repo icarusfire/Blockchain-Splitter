@@ -7,6 +7,7 @@ contract Pausable is Ownable {
     bool private paused;
     bool private killed;
 
+    event ContractResumedEvent(address indexed owner);
     event ContractPausedEvent(address indexed owner);
     event ContractKilledEvent(address indexed owner);
 
@@ -37,13 +38,14 @@ contract Pausable is Ownable {
 
     function resume() public onlyOwner whenPaused whenNotKilled {
         paused = false;
+        emit ContractResumedEvent(msg.sender);
     }
 
     function isPaused() public view returns(bool) {
         return paused;
     }
 
-    function kill() public onlyOwner {
+    function kill() public onlyOwner whenPaused{
         killed = true;
         paused = true;
         emit ContractKilledEvent(msg.sender);

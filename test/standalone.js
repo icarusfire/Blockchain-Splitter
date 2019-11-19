@@ -1,12 +1,8 @@
 const Web3 = require('web3');
-const web3 = new Web3();
-const Ganache = require('ganache-cli');
-web3.setProvider(Ganache.provider());
+const web3 = new Web3(require('ganache-cli').provider());
 const truffleContract = require("truffle-contract");
 const Splitter = truffleContract(require(__dirname + "/../build/contracts/Splitter.json"));
 const EvilSplitterConsumer = truffleContract(require(__dirname + "/../build/contracts/EvilSplitterConsumer.json"));
-const createKeccakHash = require('keccak');
-
 
 Splitter.setProvider(web3.currentProvider);
 EvilSplitterConsumer.setProvider(web3.currentProvider);
@@ -19,7 +15,7 @@ Promise = require("bluebird");
 const truffleAssert = require('truffle-assertions');
 const getBalance = web3.eth.getBalance;
 const getTransaction =  Promise.promisify(web3.eth.getTransaction);
-const { BN, toWei,fromWei, sha3 } = web3.utils;
+const { BN, toWei, fromWei, sha3 } = web3.utils;
 const amountToSend = toWei("0.2", "ether");
 const amountToSendBig = toWei("3.48", "ether");
 const amountToDraw = toWei("0.1", "ether");
@@ -42,13 +38,12 @@ describe("Splitter", function() {
         networkId = await web3.eth.net.getId();
         Splitter.setNetwork(networkId);
         EvilSplitterConsumer.setNetwork(networkId);
-
         [owner, alice, bob, carol, mike, evilContractOwner] = accounts;
     });
     
-    beforeEach(async function() {
-            instance = await Splitter.new(false, {from: owner} )
-        });
+    beforeEach("create new instance", async function() {
+        instance = await Splitter.new(false, {from: owner} )
+    });
 
  it("bob and Carol's balances should be 0.1 after receiving a split", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
@@ -56,7 +51,7 @@ describe("Splitter", function() {
             .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '0.1'))
             .then( _ => instance.balances(carol))
             .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '0.1'))     
-        });
+    });
 
     it("bob and Carol's balances should be 1.84 after receiving 2 splits", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
@@ -65,7 +60,7 @@ describe("Splitter", function() {
             .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '1.84'))
             .then( _ => instance.balances(carol))
             .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '1.84'))     
-        });        
+    });        
         
     it("bob can withdraw funds", function() {
         let gasUsed;
@@ -90,7 +85,7 @@ describe("Splitter", function() {
             .then(balanceBob => assert.strictEqual(toEther(balanceBob.toString(10)), '0'))
             .then( _ => getBalance(bob))
             .then(balanceBob => assert.strictEqual(expectedBalanceDifference(balanceBobInitial, balanceBob, gasUsed, new BN(gasPrice)).toString(10), '0.1'))
-        });
+    });
 
     it("carol can withdraw funds", function() {
         let gasUsed;
@@ -115,7 +110,7 @@ describe("Splitter", function() {
             .then(balanceCarol => assert.strictEqual(toEther(balanceCarol.toString(10)), '0'))
             .then( _ => getBalance(carol))
             .then(balanceCarol => assert.strictEqual(expectedBalanceDifference(balanceCarolInitial, balanceCarol, gasUsed, new BN(gasPrice)).toString(10), '0.1'))
-        });
+    });
 
     it("should emit events after splitting Ether", function() {
         return instance.splitEther(bob, carol,{from: alice, value:amountToSend }) 
@@ -124,7 +119,7 @@ describe("Splitter", function() {
                     return event.recp1 === bob && event.recp2 === carol && event.amountToBeSplitted.cmp(new BN(amountToSend)) === 0 && event.sender === alice;
                 });
             })
-        });
+    });
 
     it("should emit events after withdraw", function() {
         return instance.splitEther(bob, carol, {from: alice, value:amountToSend })
@@ -134,7 +129,7 @@ describe("Splitter", function() {
                     return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === bob;
                 });
             })
-        });
+    });
     
     it("should emit events after owner changed", function() {
         return instance.setOwner(bob, {from: owner})
@@ -143,19 +138,24 @@ describe("Splitter", function() {
                     return event.from === owner && event.to === bob;
                 });
             })
-        });    
+    });    
       
     it("Bob can't pause", async function() {
             await truffleAssert.reverts(instance.pause( {from: bob} ), "Only owner can execute this action");
-        });
+    });
     
     it("Bob can't kill", async function() {
             await truffleAssert.reverts(instance.kill( {from: bob} ), "Only owner can execute this action");
-        });
+    });
 
-    it("Owner can kill", async function() {
+    it("Owner can kill when paused", async function() {
+            await instance.pause( {from: owner} );
             await truffleAssert.passes(instance.kill( {from: owner} ));
-        });    
+    });
+    
+    it("Owner can't kill when not pausedd", async function() {
+            await truffleAssert.reverts(instance.kill( {from: owner} ), "Pausable: not paused");
+    });
 
     it("should abort with an error when Paused", function() {
         return instance.pause({ from: owner})
@@ -180,8 +180,8 @@ describe("Splitter", function() {
             return event.amountDrawn.cmp(new BN(amountToDraw)) === 0 && event.sender === instance.address;
         });
          
-        const fallbackEventHash = sha3 ('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)');
-        const withdrawEventHash = sha3 ('LogWithdrawEvent(address,uint256)');
+        const fallbackEventHash = sha3('LogConsumerFundsReceivedFallbackEvent(address,uint256,uint256)');
+        const withdrawEventHash = sha3('LogWithdrawEvent(address,uint256)');
 
         assert.strictEqual(tx.receipt['rawLogs'].length, 2);
         assert.strictEqual(withdrawEventHash, tx.receipt['rawLogs'][0].topics[0]);
