@@ -80,7 +80,7 @@ describe("Splitter", function() {
             .then(transaction => { 
                 gasPrice = transaction.gasPrice;
             })
-            .then ( _ => instance.balances(bob))
+            .then( _ => instance.balances(bob))
             .then(balanceBob => equalsInWei(balanceBob, '0'))
             .then( _ => getBalance(bob))
             .then(balanceBob => equalsInWei(expectedBalanceDifference(balanceBobInitial, balanceBob, gasUsed, new BN(gasPrice)), '0.1'))
@@ -104,7 +104,7 @@ describe("Splitter", function() {
             .then(transaction => { 
                 gasPrice = transaction.gasPrice;
             })
-            .then ( _ => instance.balances(carol))
+            .then( _ => instance.balances(carol))
             .then(balanceCarol => equalsInWei(balanceCarol, '0'))
             .then( _ => getBalance(carol))
             .then(balanceCarol => equalsInWei(expectedBalanceDifference(balanceCarolInitial, balanceCarol, gasUsed, new BN(gasPrice)), '0.1'))
@@ -112,7 +112,7 @@ describe("Splitter", function() {
 
     it("should emit events after splitting Ether", function() {
         return instance.splitEther(bob, carol,{from: alice, value:amountToSend }) 
-            .then( tx => {
+            .then(tx => {
                 truffleAssert.eventEmitted(tx, 'LogSplitEvent', (event) => {
                     return event.recp1 === bob && event.recp2 === carol && event.amountToBeSplitted.cmp(new BN(amountToSend)) === 0 && event.sender === alice;
                 });
@@ -122,7 +122,7 @@ describe("Splitter", function() {
     it("should emit events after withdraw", function() {
         return instance.splitEther(bob, carol, {from: alice, value:amountToSend })
             .then( _ => instance.withdraw(amountToDraw, { from: bob }))
-            .then( tx => {
+            .then(tx => {
                 truffleAssert.eventEmitted(tx, 'LogWithdrawEvent', (event) => {
                     return event.amountDrawn.toString(10) == amountToDraw && event.sender === bob;
                 });
@@ -131,7 +131,7 @@ describe("Splitter", function() {
     
     it("should emit events after owner changed", function() {
         return instance.setOwner(bob, {from: owner})
-            .then( tx => {
+            .then(tx => {
                 truffleAssert.eventEmitted(tx, 'OwnerChangedEvent', (event) => {
                     return event.from === owner && event.to === bob;
                 });
