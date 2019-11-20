@@ -45,7 +45,7 @@ describe("Splitter", function() {
         instance = await Splitter.new(false, {from: owner} )
     });
 
- it("bob and Carol's balances should be 0.1 after receiving a split", function() {
+    it("bob and Carol's balances should be 0.1 after receiving a split", function() {
         return instance.splitEther(bob, carol, { from: alice, value:amountToSend })
             .then( _ => instance.balances(bob))
             .then(balanceBob => equalsInWei(balanceBob, '0.1'))
