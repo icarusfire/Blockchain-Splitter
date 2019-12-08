@@ -15,7 +15,7 @@ const getTransaction =  Promise.promisify(web3.eth.getTransaction);
 const { BN, sha3 } = web3.utils;
 
 const toWei = function(val) { return web3.utils.toWei(val, "ether") };
-const equalsInWei = function(val1, val2) { return assert.strictEqual(val1.toString(10), toWei(val2)) };
+const equalsInWei = function(val1, val2) { return assert.strictEqual(val1.toString(10), toWei(val2).toString(10)) };
 
 const amountToSend = toWei("0.2");
 const amountToSendBig = toWei("3.48");
